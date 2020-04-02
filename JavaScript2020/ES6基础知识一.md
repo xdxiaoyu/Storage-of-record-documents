@@ -119,3 +119,135 @@ monkey.eat() // i am eat hello
 ```
 >  Class只是ES5用原型链声明类的语法糖
 > 语法糖？ -> 语法不一样，但最后的本质是一样的。
+
+
+
+getter和setter
+
+```JavaScript
+let _age = 4
+class Animal {
+  constructor(type) {
+    this.type = type
+  }
+  get age () {
+    return _age
+  }
+  set age (val) {
+    if(val%2 === 0) {
+      _age = val
+    }
+  }
+  eat() {
+    console.log('i am eat hello')
+  }
+}
+let dog = new Animal("dog")
+console.log(dog.age); 4
+dog.age = 8
+console.log(dog.age); 8
+```
+
+
+
+ES5将对象属性分为：
+
+内部属性(对象中有，但是不能随意用.访问属性)
+命名属性：所有能用.访问到的属性  
+命名属性->
+ 1、数据属性（值直接保存在属性本地的属性，ex: var lilei={sanme:"LI Lei"}）ES5中，一个属性不再是一个普通变量，而是一个微缩的小对象。每个属性都有一个value特性储存属性值，还有三个开关实现自我保护：
+
+```javascript
+let eric = { 
+	eid:1001,
+    ename:"埃里克",
+    salary:12000
+}
+
+//这个eid也是一个小对象
+eid: {
+    value:1001,
+    writable:true, // 是否可修改属性值
+    enumerable:true, // 是否可在for in 遍历时被看到 ----隐藏
+    configurable:true // 2件事：1、是否可以删除该属性 2、是否可修改其他两个开关
+}
+//设置开关需要用defineProperty  
+Object.defineProperty(对象,"属性名", {
+    开关：true / false
+} )
+ex: //让eric的eid属性只读 
+Object.defineProperty(eric,"eid",{
+    writable:false
+})
+```
+
+2.访问器属性：不实际存值，仅提供对其它数据属性保护业务的特殊属性。想用自定义规则保护属性时，只能用访问器属性
+
+```javascript
+// 如何？ 1、先定义一个隐藏姓名的半隐藏数据属性实际存储数据
+Object.defineProperty(eric,"_eage", {
+	value:25,
+	writable:true,
+    enumerable:false,
+    configurable:false,
+})
+// 2.添加正式属性名称的访问器属性，用来保护隐藏的数据属性
+Object.defineProperty(eric,"eage", {
+    // 帮用户去属性中取值
+    get:function() { return this._eage } 
+    // 帮用户将新值送入属性中，但是会先验证是否符合规则。不符合将不保存直接报错。
+    set:function(value) { 
+    	if(value%2 === 0 ) { 
+            this._eage = value
+        } else { throw Error("error") }
+	}
+	enumerable:true, // 代替受保护属性抛头露面
+    configurable:true, // 不能删除'保镖'
+})
+```
+
+> 保护对象有3个层次
+>1、防扩展：禁止向对象中添加新属性
+>Object.preventExtensions(obj) 
+> 原理： 其实每个对象都有一个隐藏的内部属性：extensible:true  所有对象默认都是可拓展的
+>2、密封：在兼具方扩展同时，进一步禁止删除所有属性，属性值依然可以改
+>Object.seal(obj) 
+> 原理：1.preventExtensions  2.自动将所有属性的configurable改为false
+> 3、冻结：在兼具密封的基础上，禁止修改所有属性值
+> Object.freeze(obj)
+> 原理：1. 自动执行seal()  2.自动修改所有属性的writable为false
+
+
+
+静态方法：-> 不属于对象实例的，而属于这个类的。（实例对象是没有的）
+
+```JavaScript
+// ES5->实现类的静态方法
+let Animal = function (type) {
+    this.type=type
+}
+Animal.protopyte.eat = function () {
+    Animal.walk()
+    console.log('i am eat foot')
+}
+Animal.walk = function () {
+    console.log('i am walking')
+}
+dog.eat() // i am walking   i am eat foot
+
+//ES6->实现类的静态方法 
+class Animal {
+    construction(type) {
+        this.type = type
+    }
+    eat () {
+        Animal.walk()
+        console.log('i am eat foot')
+    }
+    static walk () {
+        console.log('i am walking ')
+    }
+}
+dog.eat() // i am walking   i am eat foot
+```
+
