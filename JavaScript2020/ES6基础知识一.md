@@ -251,3 +251,150 @@ class Animal {
 dog.eat() // i am walking   i am eat foot
 ```
 
+
+
+类的继承
+
+```JavaScript
+// ES5
+let Animal = function (type) {
+    this.type = type
+}
+Animal.prototype.eat= function() {
+    console.log('i am eat food')
+}
+
+let Dog = function (type) {
+    Animal.call(this, type)
+    this.run = function() {
+        console.log('i can run')
+    }
+}
+Dog.prototype = Animal.prototype
+let dog = new Dog('dog')
+dog.eat() // 'i am eat food'
+
+
+// ES6
+class Animal {
+    constructor(type) {
+        this.type = type
+    }
+    eat () {
+        cosnole.log('i am eat food')
+    }
+}
+class Dog extends Animal {
+    constructor(type,age) {
+        super(type)
+        this.age = age
+    }
+}
+let dog = new Dog('dog',5)
+dog.eat() // 'i am eat food'
+console.log(dog.age) // 5
+```
+
+
+
+
+
+
+
+Function  Updates
+
+> 默认值、不确定参数、箭头函数
+
+```javascript
+// 参数默认值
+// ES5 
+function f(x,y,z) {
+    if(y === undefined) {
+        y = 7
+    }
+    if(z === undefined) {
+        z = 42
+    }
+    return x+y+z
+}
+console.log(f(1))  // 50
+//ES6
+function f(x,y=7,z=43) {
+    // f.length 可以获取到没有默认值参数的个数
+    return x+y+z
+}
+console.log(f(1))  //51
+
+
+// 当函数传入参数不确定时
+// ES5
+function sum() {
+    let num = 0
+    //ES5
+    Array.prototype.forEach.call(arguments,function(item) {
+      num += item*1
+    })
+    //ES6
+    Array.from(arguments).forEach(function(item) {
+      num += item*1
+    })
+    return num
+}
+//ES6
+function sum (one, ...nums) {
+    let num = 0
+    num = nums.reduce((x,y) => { return x+y })
+    return num + one*2
+}
+console.log(1,2,3) // 7
+// Rest参数 
+//1、用来获取所有的参数的，而且是函数执行时的参数
+//2、nums它是数组，不是伪数组。可以直接用数组API
+//3、可以拆分开，将剩余不确定的参数放入nums中
+
+function sum(x = 1, y = 2, z = 3) {
+  return x + y + z
+}
+let data = [4, 5, 7]
+// ES5-> console.log(sum.apply(this, data));  //16
+// spread
+// ES6 console.log(sum(...data)); //16
+
+
+
+
+// 箭头后面是表达式，可以省略return和{}
+let sun = (x,y,z) => ({
+    x:x,
+    y:y,
+    z:z
+}) //不加小括号报错,why? 小括号当做运算符表达式
+console.log(sun(1,2,3)) // {x:1,y:2,z:3}
+let sun = (x,y,z) => {
+    return {
+        x:x,
+    	y:y,
+    	z:z
+    }
+}
+console.log(sun(1,2,4)) // {x:1,y:2,z:4}
+
+//箭头函数this指向问题：箭头函数构建时执行了 eval，把最外层的作用域指向了空对象
+// ES6的箭头函数的this指向，指向的是构建时的this的指向，不会改变，所以不是执行时this的指向
+let test = {
+    name:'test',
+    say: () => {
+        console.log(this.name)
+    }
+}
+test.say() // undefined
+
+let test = {
+    name:'test',
+    say: function () {
+        console.log(this.name)
+    }
+}
+test.say() // test
+```
+
