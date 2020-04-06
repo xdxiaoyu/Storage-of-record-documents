@@ -428,3 +428,67 @@ let obj = { //给obj增加一个动态的变量，存一个3的属性（z可以�
 // 等同于 function* functionName() {}
 console.log(obj) // {x:1,y:2,3:6}  {x:1,y:2,5:6}
 ```
+
+
+
+**新的数据结构：**
+
+Set
+
+```javascript
+// Set 它所存储的数据必须是唯一的，接收的参数是一个可遍历的对象
+let s = new Set
+s.add('hi')  
+s.add('hello').add('goodbey') // 写入数据
+s.delete('hello') // 删除数据
+s.clear() // 删除所有数据
+console.log(s.has('hello')) // true 是否包含某个数据
+console.log(s.size) // 3 指目前set存入数据的长度
+for(let item of s) { console.log(item) } // 读数据 还可以使用forEach
+```
+
+
+
+ES6中Map是什么，解决什么问题，怎么用？
+```javascript
+// Map 它的key可是是任何值
+// let map = new Map([[1, 2], [3, 4]])
+let map = new Map()
+map.set(1, 2)
+map.set('x', 'xax')
+// console.log(map);
+// map.delete(1)
+// map.clear()
+// console.log(map.size);
+// console.log(map.has('x'))
+// console.log(map.get('x'))
+// console.log(map.keys(), map.values(), map.entries())
+// map.forEach((value, key) => {
+//   console.log(value, key);
+// })
+for (let [key,value] of map) {
+  console.log(key,value)
+}
+//键的类型是任意的
+let O = function () { console.log('0') }
+map.set(0,4)
+cosnole.log(map.get(0)) // 4 
+//键的顺序
+//跟你添加到对象中数据的索引决定的
+```
+
+
+
+ES5和ES6中对象的拷贝
+```javascript
+const target = {}
+const source = { a:1, b: 2}
+Object.assign(target, source) // 此API实行的是浅复制(对于不是引用类型的值，做数据替换。是引用类型的值，它不在遍历，直接替换地址)
+console.log(target) // {a:1,b:2}
+//ex
+const target = {a : {b:1, e:5 } }
+const source = {a : {c:5 ,b:2 } }
+Object.assign(target, source)
+console.log(target) // {a: {c:5,b:2}}
+```
+
