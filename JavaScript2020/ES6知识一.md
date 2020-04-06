@@ -398,3 +398,33 @@ let test = {
 test.say() // test
 ```
 
+
+
+ES5对象中定义key,value以及函数 和ES6有啥区别
+```javascript
+let x = 1; let y = 2;let z =3
+//ES5
+let obj = {
+    x:x,
+    y:y,
+    hello:function () {
+        console.log('hello')
+    }
+}
+//给obj增加一个动态的变量，存一个3的属性（z可以变化）
+obj[z]=5
+console.log(obj) // {x:1,y:2,3:5}
+
+//ES6
+let x=1;let y=2
+let obj = { //给obj增加一个动态的变量，存一个3的属性（z可以变化）
+    x,
+    y,
+    [y+z]:6, // [z+y]:6
+    * hello() { // 异步函数 执行不会立即调用
+        console.log('ES6 hello')
+    }
+}
+// 等同于 function* functionName() {}
+console.log(obj) // {x:1,y:2,3:6}  {x:1,y:2,5:6}
+```
