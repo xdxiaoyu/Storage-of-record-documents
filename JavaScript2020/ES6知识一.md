@@ -492,3 +492,42 @@ Object.assign(target, source)
 console.log(target) // {a: {c:5,b:2}}
 ```
 
+
+
+正则修饰符
+
+```javascript
+const s = 'aaa_aa_a'
+const r1 = /a+/g
+const r2 = /a+/y
+
+console.log(r1.exec(s)) // 'aaa'
+console.log(r2.exec(s)) // 'aaa'
+console.log(r1.exec(s)) // 'aa'
+console.log(r2.exec(s)) // null 
+//y 粘连模式。连续的从上一次结束后的起始位置开始匹配
+
+
+// 处理正则中文问题 
+// unicode u修饰符 \uffff
+let s = '𠮷' // (4个字节)两个字符的中文
+let s2 = '\uD842\uDFB7' // UTF-16
+
+console.log(/^\uD842/.test(s2)) // true 不应该匹配到
+console.log(/^\uD842/u.test(s2)) // false 
+
+console.log(/^./.test(s)) // false
+console.log(/^./u.test(s)) // true 需要加u才能匹配到大于两个字节的字符
+
+console.log(/\u{61}/.test('a')); // false
+console.log(/\u{61}/u.test('a')) // true  想在正则表达式中使用unicode的码点识别字符，用/\u{码点值}/u
+
+//关于量词
+console.log(/𠮷{2}/.test('𠮷𠮷')) // false
+console.log(/𠮷{2}/u.test('𠮷𠮷')) // true
+// 到ES6，正则里有中文。加上u
+console.log(/[a-z]/i.test('\u212A')) // false
+console.log(/[a-z]/iu.test('\u212A')) //  true
+
+```
+
