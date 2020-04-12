@@ -531,3 +531,27 @@ console.log(/[a-z]/iu.test('\u212A')) //  true
 
 ```
 
+
+
+ES6的Tag函数
+
+```javascript
+function Price(Strings, type) {
+    let s1 = string[0]
+    const retailPrice = 20
+    const wholeSalePrcie = 16
+    let showTxt
+    if(type === 'retail') {
+        showTxt = '购买单价是：' + retailPrice
+    } else {
+        showTxt = '购买单价是：' + wholeSalePrice
+    }
+    return `${s1}${showTxt}`
+}
+
+let showTxt = Price`您此次的${'retail'}`
+console.log(showTxt)
+```
+
+
+
