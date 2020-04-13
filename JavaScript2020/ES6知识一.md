@@ -555,3 +555,86 @@ console.log(showTxt)
 
 
 
+ES6解构
+
+```javascript
+// 数组
+let arr = ['hello','word','next']
+let [firstName,,thirdName] = arr
+console.log(firstName,thirdName) // hello next
+//由于数组本质是特殊的对象，因此可以对数组进行对象属性的解构
+let {0:first,[arr.length -1]:last} = arr
+first // 1
+last // 3
+
+// 对象
+let user = { name: 's', surname: 't' }; //分号必须加
+[user.name, user.surname] = [1,2]
+console.log(user) // { name:1, surname:2 }
+
+// 结构右边是可遍历的数据
+let [firstName,,thirdName] = new Set([1,2,3,4])
+console.log(firstName,thirdName) // 1,3
+
+// 解构赋值的另一种形式
+let user = {name: 's', surname:'t'}
+for (let [k, v] of Object.entries(user)) {
+    // 隐式赋值，显示索引
+    console.log(k,v)
+}
+
+// Rest参数在解构中的使用	
+let arr = [1,2,3,4,5,6,7,8,9]
+let [fir,cur,...last] = arr
+console.log(fir,cur,last) // 1,2
+
+let arr = [] // let arr = [1]
+let [fir,cur = 'hello',...last] = arr
+console.log(fir,cur,last) // undefined undefined []; 1 hello []
+```
+
+```javascript
+// 对象解构
+let options = {
+    title : 'menu',
+    width: 100,
+    height: 200
+}
+
+let {title:title2 ,width,height,yud=130} = options // 不简写，变量名要和Obj的属性一致
+console.log(title2, width, height) // menu,100,200,300
+
+let { title,...last } = options
+console.log(title, last) // meu {width:100,height:200}
+
+
+let options = {
+    size: {
+        width: 100,
+        height: 200
+    },
+    item: ['Cake','Donut'],
+    extra: true
+}
+let { size:{width,height},item:[item1],extra } = options
+console.log(width,height,item1) // 100 200 'Cake' true
+
+// 对象的解构赋值可以取到继承的属性
+const obj1 = {}
+const obj2 = { foo:'bar' }
+Object.setPrototypeOf(obj1,obj2) // 对象的obj1的原型对象是obj2。
+const { foo } = obj1
+foo // 'bar' 
+```
+
+```javascript
+//字符串
+const [a,b,c] = 'hello'
+a // 'h'
+b // 'e'
+c // 'l'
+// 类似数组的对象都有一个length属性，因此还可以对这个属性解构赋值
+let {length:len} = 'hello'
+len // 5
+```
+
