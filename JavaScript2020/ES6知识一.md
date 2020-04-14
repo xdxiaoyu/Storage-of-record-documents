@@ -558,7 +558,7 @@ console.log(showTxt)
 ES6解构
 
 ```javascript
-// 数组
+// 数组解构
 let arr = ['hello','word','next']
 let [firstName,,thirdName] = arr
 console.log(firstName,thirdName) // hello next
@@ -636,5 +636,37 @@ c // 'l'
 // 类似数组的对象都有一个length属性，因此还可以对这个属性解构赋值
 let {length:len} = 'hello'
 len // 5
+```
+
+
+
+ES5回调地狱和ES6-Promise
+
+>  JS是单线程，异步操作不会立马执行，而是放到异步队列中。要先执行同步操作，执行完再执行异步操作
+
+```javascript
+// callback
+function loadScript (src,callback) {
+    let script = document.createElement('script')
+    script.src = src
+    script.onload = () => {callback(src)}
+    document.head.append(script)
+}
+loadScript('./1.js',function(script) {
+    loadScript('./2.js',function(script) {
+        loadScript('./3.js',function(script) {})
+    })
+}) // 1 2 3
+
+function loadScript (src) {
+    return new Promise((resolve,reject) => { // pending,undefined
+        let script = document.createElement('script')
+    	script.src = src
+        srcipt.onload = () => resolve(src) // fulfilled,result
+        script.onload = (err) => reject(err) // rejected,error
+        document.head.append(script)
+    })
+}
+loadScript('./1.js').then(loadScript('./2.js')) // 1 2
 ```
 
