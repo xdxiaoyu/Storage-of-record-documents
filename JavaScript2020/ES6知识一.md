@@ -643,7 +643,6 @@ len // 5
 ES5回调地狱和ES6-Promise
 
 >  JS是单线程，异步操作不会立马执行，而是放到异步队列中。要先执行同步操作，执行完再执行异步操作
-
 ```javascript
 // callback
 function loadScript (src,callback) {
@@ -662,11 +661,86 @@ function loadScript (src) {
     return new Promise((resolve,reject) => { // pending,undefined
         let script = document.createElement('script')
     	script.src = src
-        srcipt.onload = () => resolve(src) // fulfilled,result
-        script.onload = (err) => reject(err) // rejected,error
+        script.onload = () => resolve(src) // fulfilled,result
+        script.onerror = (err) => reject(err) // rejected,error
         document.head.append(script)
     })
 }
 loadScript('./1.js').then(loadScript('./2.js')) // 1 2
+```
+> **then的语法**
+>
+> 1. .then是Promise对象原型上面的方法
+> 2. promise.then( onFulfilled, onRejected )  // (第一个必选，第二个可选。均为函数类型)对应resolve和reject
+> 3. 上面场景.then(loadScript('./2.js')) 里面的loadScript('./2.js')虽然被忽略，但是是表达式，就要计算表达式的值，就被执行，所有也能运行
+
+```JavaScript
+loadScript('./1.js').then(() => {
+    loadScript('./2.js')
+}, (err) => {
+    console.log(err)
+})
+.then(() => {
+    loadScript('./3.js')
+}, (err) => {
+    console.log(err)
+})
+
+// Promise提供了两个静态方法
+
+function test (bool) {
+    if(bool) {
+        return new Promise()
+    } else {
+        // return 42   只有promise对象才可以.then
+        return Promise.resolve(42)
+        return Promise.reject(new Error('ss')) // test(1)
+    }
+}
+test(0).then((value) => {
+    console.log(value) // 42
+})
+test(1).then((value)=> {
+    console.log()
+}, (err) => {
+    console.log(err) // ss
+})
+
+
+```
+> **Promise对错误的处理**
+
+```JavaScript
+function loadScript(src) {
+  return new Promise((resolve, reject) => { // pending,undefined
+    let script = document.createElement('script')
+    script.src = src
+    script.onload = () => resolve(src) // fulfilled,result
+    script.onerror = (err) => reject(err) // rejected,error
+    document.head.append(script)
+  })
+}
+
+loadScript('./5.js')
+  .then(() => {
+    return loadScript('./2.js')
+  }).then(() => {
+    return loadScript('./3.js')
+  })
+  .catch(err => {
+    console.log(err)
+  })
+// catch也是promise原型对象上的方法,捕获的是链式操作上rejected抛出的错误(改变了promise状态)
+// 不要用 throw new Error 去触发 catch
+```
+> promise.all  ---并行异步操作
+```javascript
+let p1 = Promise.resolve(1)
+let p2 = Promise.resolve(2)
+let p3 = Promise.resolve(3)
+
+Promise.all([p1, p2, p3]).then(res => {
+  console.log(res) // [1,2,3]
+})
 ```
 
