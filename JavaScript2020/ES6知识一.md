@@ -733,7 +733,7 @@ loadScript('./5.js')
 // catch也是promise原型对象上的方法,捕获的是链式操作上rejected抛出的错误(改变了promise状态)
 // 不要用 throw new Error 去触发 catch
 ```
-> promise.all  ---并行异步操作
+> Promise.all  ---并行异步操作
 ```javascript
 let p1 = Promise.resolve(1)
 let p2 = Promise.resolve(2)
@@ -741,6 +741,29 @@ let p3 = Promise.resolve(3)
 
 Promise.all([p1, p2, p3]).then(res => {
   console.log(res) // [1,2,3]
+})
+```
+
+> Promise.race  ---静态方法
+
+```javascript
+
+const p1 = () => {
+    return new Promise((resolve,reject) => {
+        setTimeout(function () {
+            resolve(1)
+        }, 1000)
+    })
+}
+const p2 = () => {
+    return new Promise((resolve,reject) => {
+        setTimeout(function () {
+            resolve(2)
+        },0)
+    })
+}
+Promise.race([p1(),p2()]).then(res => {
+    console.log(res)  // 2
 })
 ```
 
