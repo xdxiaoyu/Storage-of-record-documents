@@ -767,3 +767,35 @@ Promise.race([p1(),p2()]).then(res => {
 })
 ```
 
+
+
+### 代理：Proxy
+
+```javascript
+let o = {
+    name: 'xiao ming',
+    price: 190
+}
+// Proxy
+let d = new Proxy(o, {
+    get(trage, key) {
+        return trage[key]
+    },
+    set(trage, key, value) {
+        return false
+    }
+})
+d.price = 300
+console.log(d.price, d.name) // 190 xiao ming
+
+// ES5的方法
+for(let [key] of Object.entries(0)) { 
+    //Object.entries 可以把一个对象的键值以数组的形式遍历出来
+    Object.defineProperty(o,key, {
+        writable: false // 是否可以被赋值
+    })
+}
+o.price = 300
+console.log(o.name, o.price)
+```
+
