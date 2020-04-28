@@ -799,3 +799,80 @@ o.price = 300
 console.log(o.name, o.price)
 ```
 
+```JavaScript
+// 校验
+let o = {
+    name: 'xiaoming',
+    price： 190
+}
+let d = new Proxy(o, {
+    get(trage,key) {
+        return trage[key] || ''
+    },
+    set(trage,key,value) {
+        if(Reflect.has(trage, key)) {
+            if(key === 'price') {
+                if(value > 300) {
+                    retrun false
+                } else {
+                    trage[key] = value
+                }
+            } eles {
+                trage[key] = value
+            }
+        } else {
+            return false
+        }
+    }
+})
+d.price = 301 // 190
+d.name = 'hanmeimie' 
+d.age = 400 // ''
+
+// 解耦的写法
+window.addEventListener('error', (e) => {
+   console.log(e.message);
+    // report('./')
+}, true)
+
+let valdator = (trage, key, value) => {
+    if (Reflect.has(trage, key)) {
+    if (key === 'price') {
+      if (value > 300) {
+        return false
+      } else {
+        trage[key] = value
+      }
+    } else {
+      trage[key] = value
+    }
+  } else {
+    return false
+  }
+}
+let d = new Proxy(o, {
+    get(trage, key) {
+        return trage[key] || ''
+    },
+    set: valdator
+})
+```
+
+```javascript
+// id只读且唯一，不能被修改
+class Component = {
+    construction() {
+        this.proxy = new Proxy({
+            id: Math.random().toString(36).slice(-8)
+        })
+    }
+    get id() { // 只读
+        return this.proxy.id
+    }
+}
+com.id = abc // 不起作用
+let com = new Component() // tcaadoav 
+let com2 = new Component() // pt8zw878
+
+```
+
