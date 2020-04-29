@@ -769,6 +769,81 @@ Promise.race([p1(),p2()]).then(res => {
 
 
 
+### 反射 Reflect
+
+```javascript
+console.log(Math.floor.apply(null, [3.72])) // 3
+console.log(Reflect.apply(Math.floor,null, [4.72]))  // 4
+
+//先执行方法， 反射是执行过程中再决定用哪个方法，
+//ex:
+let price = 91.5
+if(price > 100) {
+    price = Math.floor.apply(null, [price])
+} else {
+    price = Math.ceil.apply(null , [price])
+}
+console.log(price) // 92
+// 用反射
+console.log(Reflect.apply(price > 100 ? Math.floor : Math.ceil,null,[price])) // 92
+
+// 类的实例化
+let d = new Date()
+console.log(d.getTime()) // 1556755471
+// 用反射代替new，实例化对象
+let d = Reflect.construct(Data, []) // construct 构造函数，不加参数必须传递一个空数组
+console.log(d.getTime(),d instanceof Date)//instanceof判断一个实例对象是不是这个类的实例
+
+// 反射定义一个新属性
+const student = {}
+const r = Reflect.defineProperty(student, 'name', {value:'Nick1'})
+student,r // {name: 'Nick1'} true  结果返回的是true/false
+const r = Object.definProperty(student, 'name', {value: 'Nick2'})
+student,r // {name: 'Nick2'} {name: 'Nick2'} 结果返回的是一个对象
+
+// 反射读取、写入和删除对象上的属性
+const obj = {x:3,y:2}
+Reflect.deleteProperty(obj, 'x')
+obj // {y:2}
+Reflect.get(obj, 'x') // 3
+Reflect.getOwnPropertyDescriptor(obj.'x') //读取该属性的值和属性描述符 {value: 3, writable: true, enumerable: true, configurable: true}
+Reflect.set(obj,'z',4)
+obj // {x: 1, y: 2, z: 4}
+
+const arr = ['duck', 'duck', 'duck']
+Reflect.set(arr, 2 , 'goods')
+console.log(arr); // ["duck", "duck", "goods"]
+
+// 查看此实例对象上的原型对象上的东西
+let d = new Date()
+Reflect.getPrototypeOf(d)
+Object.getPrototypeOf(d)
+
+// Reflet验证一个对象是否包含此属性
+const obj = { x:1, y:2 }
+Reflect.has(obj,'y') //true    apply ,has ,construct。Object上没有而Reflect上有
+
+// 判断一个对象是否可扩展
+const obj = {x:1,y:2}
+obj.z = 3
+Obj.freeze(obj) // 冻结obj对象
+Reflect.isExtensible(obj) // false
+
+//设置对象禁止扩展
+const obj = {x:1,y:2}
+Reflect.preventExtensions(obj) // 禁止对象扩展
+Reflect.isExtensible(obj) // false
+
+// 修改原型对象
+const arr = ['duck', 'duck', 'duck']
+Reflect.getPrototypeOf(arr) // 返回arr的原型对象
+Reflect.setPrototypeOf(arr,String.prototype)
+// arr.sort() 报错
+Reflect.getPrototypeOf(arr) // 返回新设置的原型对象
+```
+
+
+
 ### 代理：Proxy
 
 ```javascript
@@ -789,7 +864,7 @@ d.price = 300
 console.log(d.price, d.name) // 190 xiao ming
 
 // ES5的方法
-for(let [key] of Object.entries(0)) { 
+for(let [key] of Object.entries(o)) { 
     //Object.entries 可以把一个对象的键值以数组的形式遍历出来
     Object.defineProperty(o,key, {
         writable: false // 是否可以被赋值
@@ -859,7 +934,7 @@ let d = new Proxy(o, {
 ```
 
 ```javascript
-// id只读且唯一，不能被修改
+// 使用代理做到 id只读且唯一，不能被修改
 class Component = {
     construction() {
         this.proxy = new Proxy({
@@ -874,5 +949,27 @@ com.id = abc // 不起作用
 let com = new Component() // tcaadoav 
 let com2 = new Component() // pt8zw878
 
+// 可撤销的代理操作
+let o = {
+  name: 'xiaoming',
+  price: 190
+}
+let d = Proxy.revocable(o, {
+  get(trage, key) {
+    if(key === 'price') {
+      return trage[key] + 20
+    } else {
+      return trage[key]
+    }
+  },
+})
+d.proxy.price,d // 210 {proxy: Proxy, revoke: ƒ}
+setTimeout(() => {
+  d.revoke() // 撤销以后，代理数据将无法被读取到
+  setTimeout(() => {
+    console.log(d.proxy.price);
+    //Cannot perform 'get' on a proxy that has been revoked
+  },100)
+},1000)
 ```
 
