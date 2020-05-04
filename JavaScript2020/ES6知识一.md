@@ -973,3 +973,50 @@ setTimeout(() => {
 },1000)
 ```
 
+
+
+**Generator 函数的语法**
+
+> 调用Generator函数后，该函数并不执行，返回的也不是函数运行结果，而是一个指向内部状态的指针对象，下一步必须调用遍历器对象的next()方法，是指针移向下一个状态
+
+```javascript
+function * loop() {
+    for (let i = 0; i < 5; i++) {
+        yield console.log(i)
+    }
+}
+const l =loop()
+l.next() // 0
+l.next() // 1
+l.next() // 2
+
+function * gen () {
+  let val
+  val = yield 1
+  console.log(val)
+}
+const l = gen()
+l.next()
+l.next()  // undefined  yield是没有返回值的
+
+//-> 需要深化理解一下 
+function * gen () {
+  let val
+  val = yield * [1,2,3] // yield加*以后，表示的是可遍历的对象(可迭代的对象)
+  console.log(val)
+}
+const l = gen()
+console.log(l.next()) // {value: 1, done: false}
+console.log(l.next()) // {value: 2, done: false}
+
+// next传值进入函数
+function * gen () {
+  let val
+  val = yield [1,2,3] // yield加*以后，表示的是可遍历的对象(可迭代的对象)
+  console.log(val) // 20
+}
+const l = gen()
+console.log(l.next(10))  // {value: Array(3), done: false}
+console.log(l.next(20))  // {value: undefined, done: true}
+```
+
