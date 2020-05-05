@@ -1104,6 +1104,8 @@ function * series() {
     }
 }
 let ts = series()
-console.log(ts.next().value)
+console.log(ts.next().value) // 1
+console.log(ts.next().value) // 2
+console.log(ts.next().value) // 3
 ```
 
