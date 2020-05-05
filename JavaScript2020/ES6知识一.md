@@ -1018,5 +1018,92 @@ function * gen () {
 const l = gen()
 console.log(l.next(10))  // {value: Array(3), done: false}
 console.log(l.next(20))  // {value: undefined, done: true}
+
+//EX:Generator函数的应用场景
+//ES5实现抽奖
+function draw(first = 1, second = 3, third = 5) {
+  let firstPrize= ['1A','1B','1C','1D','1E']
+  let secondPrize= ['2A','2B','2C','2D','2E','2F','2G','2H','2I']
+  let thirdPrize= ['3A','3B','3C','3D','3E','3F','3G','3K','3I','3F','30']
+  let result = []
+  let random
+  // 抽一等奖
+  for (let i = 0; i < first; i++) {
+    random = Math.floor(Math.random() * firstPrize.length)
+    result = result.concat(firstPrize.splice(random, 1)) 
+  }
+  // 抽二等奖
+  for (let i = 0; i < second; i++) {
+    random = Math.floor(Math.random() * secondPrize.length)
+    result = result.concat(secondPrize.splice(random, 1)) 
+  }
+  // 抽三等奖
+  for (let i = 0; i < third; i++) {
+    random = Math.floor(Math.random() * thirdPrize.length)
+    result = result.concat(thirdPrize.splice(random, 1)) 
+  }
+  return result
+}
+let t = draw()
+for ( let value of t) {
+  console.log(value); //一次全都出来了
+}
+
+//ES6使用Generator
+function* draw(first = 1, second = 3, third = 5) {
+  let firstPrize = ['1A', '1B', '1C', '1D', '1E']
+  let secondPrize = ['2A', '2B', '2C', '2D', '2E', '2F', '2G', '2H', '2I']
+  let thirdPrize = ['3A', '3B', '3C', '3D', '3E', '3F', '3G', '3K', '3I', '3F']
+  let count = 0
+  let random
+  // 抽一等奖
+  while (1) {
+    if (count < first) {
+      random = Math.floor(Math.random() * firstPrize.length)
+      yield firstPrize[random]
+      count++
+      firstPrize.splice(random, 1)
+    } else if (count < first + second) {
+      random = Math.floor(Math.random() * secondPrize.length)
+      yield secondPrize[random]
+      count++
+      secondPrize.splice(random, 1)
+    } else if (count < first + second + third) {
+      random = Math.floor(Math.random() * thirdPrize.length)
+      yield thirdPrize[random]
+      count++
+      thirdPrize.splice(random, 1)
+    } else {
+      return false
+    }
+  }
+  return result
+}
+let d = draw()
+console.log(d.next().value)
+console.log(d.next().value)
+
+//应用场景2
+function* count(x = 1) {
+  while (1) {
+    if (x % 3 === 0) {
+      yield x
+    }
+    x++
+  }
+}
+let num = count()
+console.log(num.next().value)
+
+// 用Generator实现斐波那契数列
+function * series() {
+    let [x, y] = [0, 1]
+    while(1) {
+        [x, y] = [y, x+y]
+        yield y
+    }
+}
+let ts = series()
+console.log(ts.next().value)
 ```
 
