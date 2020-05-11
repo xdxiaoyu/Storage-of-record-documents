@@ -122,7 +122,7 @@ monkey.eat() // i am eat hello
 
 
 
-getter和setter
+# getter和setter
 
 ```JavaScript
 let _age = 4
@@ -150,7 +150,7 @@ console.log(dog.age); 8
 
 
 
-ES5将对象属性分为：
+##### ES5将对象属性分为：
 
 内部属性(对象中有，但是不能随意用.访问属性)
 命名属性：所有能用.访问到的属性  
@@ -219,7 +219,9 @@ Object.defineProperty(eric,"eage", {
 
 
 
-静态方法：-> 不属于对象实例的，而属于这个类的。（实例对象是没有的）
+##### 静态方法：
+
+-> 不属于对象实例的，而属于这个类的。（实例对象是没有的）
 
 ```JavaScript
 // ES5->实现类的静态方法
@@ -253,7 +255,7 @@ dog.eat() // i am walking   i am eat foot
 
 
 
-类的继承
+##### 类的继承
 
 ```JavaScript
 // ES5
@@ -301,7 +303,7 @@ console.log(dog.age) // 5
 
 
 
-Function  Updates
+# Function  Updates
 
 > 默认值、不确定参数、箭头函数
 
@@ -400,7 +402,8 @@ test.say() // test
 
 
 
-ES5对象中定义key,value以及函数 和ES6有啥区别
+##### ES5对象中定义key,value以及函数 和ES6有啥区别
+
 ```javascript
 let x = 1; let y = 2;let z =3
 //ES5
@@ -431,9 +434,9 @@ console.log(obj) // {x:1,y:2,3:6}  {x:1,y:2,5:6}
 
 
 
-**新的数据结构：**
+# 新的数据结构：
 
-Set
+##### Set
 
 ```javascript
 // Set 它所存储的数据必须是唯一的，接收的参数是一个可遍历的对象
@@ -449,7 +452,8 @@ for(let item of s) { console.log(item) } // 读数据 还可以使用forEach
 
 
 
-ES6中Map是什么，解决什么问题，怎么用？
+##### ES6中Map是什么，解决什么问题，怎么用？
+
 ```javascript
 // Map 它的key可是是任何值
 // let map = new Map([[1, 2], [3, 4]])
@@ -479,7 +483,8 @@ cosnole.log(map.get(0)) // 4
 
 
 
-ES5和ES6中对象的拷贝
+# ES5和ES6中对象的拷贝
+
 ```javascript
 const target = {}
 const source = { a:1, b: 2}
@@ -494,7 +499,7 @@ console.log(target) // {a: {c:5,b:2}}
 
 
 
-正则修饰符
+# 正则修饰符
 
 ```javascript
 const s = 'aaa_aa_a'
@@ -533,7 +538,7 @@ console.log(/[a-z]/iu.test('\u212A')) //  true
 
 
 
-ES6的Tag函数
+##### ES6的Tag函数
 
 ```javascript
 function Price(Strings, type) {
@@ -555,7 +560,7 @@ console.log(showTxt)
 
 
 
-ES6解构
+# ES6解构
 
 ```javascript
 // 数组解构
@@ -640,7 +645,7 @@ len // 5
 
 
 
-ES5回调地狱和ES6-Promise
+# ES5回调地狱和ES6-Promise
 
 >  JS是单线程，异步操作不会立马执行，而是放到异步队列中。要先执行同步操作，执行完再执行异步操作
 ```javascript
@@ -769,7 +774,7 @@ Promise.race([p1(),p2()]).then(res => {
 
 
 
-### 反射 Reflect
+# 反射 Reflect
 
 ```javascript
 console.log(Math.floor.apply(null, [3.72])) // 3
@@ -844,7 +849,7 @@ Reflect.getPrototypeOf(arr) // 返回新设置的原型对象
 
 
 
-### 代理：Proxy
+#  代理：Proxy
 
 ```javascript
 let o = {
@@ -975,7 +980,7 @@ setTimeout(() => {
 
 
 
-**Generator 函数的语法**
+# Generator 函数的语法
 
 > 调用Generator函数后，该函数并不执行，返回的也不是函数运行结果，而是一个指向内部状态的指针对象，下一步必须调用遍历器对象的next()方法，是指针移向下一个状态
 
@@ -1108,4 +1113,53 @@ console.log(ts.next().value) // 1
 console.log(ts.next().value) // 2
 console.log(ts.next().value) // 3
 ```
+
+# 遍历器接口
+
+> 输入是固定的，输出是有约束的，中间无所谓
+> 什么是可迭代协议-> 必须要有以Symbol.iterator为key的方法(没有就是不可迭代
+> 什么是迭代器协议->既然它可以迭代，它是怎样的一个迭代过程，这就是迭代器。要求必须返回一个对象，无参数且命名为next，next的返回值必须是done和value
+```javascript
+let authors = {
+  allAuthors: {
+    fiction: ['Agla', 'Skks', 'Lp'],
+    scienceFiction: ['Neal', 'Arthru', 'Ribert'],
+    fantasy: ['J.R.Tole', 'J.M.R', 'Terr P.K']
+  },
+  Addres: []
+}
+// 遍历器接口
+anthors[Symbol.iterator] = function () {
+    // this 指对象本身
+    let allAuthors = this.allAuthors
+    let keys= Reflect.ownkeys(allAuthors)
+    let values = []
+    return {
+        next() {
+            if(!values.length) {
+                if(keys.length) {
+                    values = allAuthors[key[0]]
+                    keys.shift()
+                }
+            }
+            return {
+                done: !values.length, // 遍历是否结束
+                value：values.shift() // 当前所遍历项的值
+            }
+        }
+    }
+}
+let r = []
+for (let v of authors) {
+    r.push(v)
+}
+console.log(r)
+
+```
+
+
+
+
+
+
 
