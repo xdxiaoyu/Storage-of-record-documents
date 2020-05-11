@@ -110,7 +110,7 @@ class Animal {
 let dog = new Animal('dog')
 let monkey = new Animal('monkey')
 console.log(dog); //Animal {type:"dog"}
-console.log(monkey); //Animal {type:"monkey",eat:f}
+console.log(monkey); //Animal {type:"monkey"}
 dog.eat() // i am eat hello
 monkey.eat() // i am eat hello
 
