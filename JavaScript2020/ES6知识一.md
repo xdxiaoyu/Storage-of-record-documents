@@ -1,4 +1,6 @@
-# Array
+# ECMAScript 6 入门
+
+## Array
 
 **ES5中如何将伪数组转换为数组？ES6？**
 
@@ -9,7 +11,8 @@ let imgs = [].slice.call(document.querySelectorAll('img')) // NodeList
 
 
 
-什么是伪数组：1、这个对象是按索引方式存储数据的。2、它具备length属性
+ 什么是伪数组：1、这个对象是按索引方式存储数据的。2、它具备length属性
+
 ```javascript
 //Array.from 
 let args = Array.from(arguments)
@@ -19,11 +22,12 @@ let args = Array.from(arguments)
 let args = Array.form({ length: 5},function() { return 1 }) // 第二个参数是方法，相当于遍历每次都要执行的
 console.log(args) // [1,1,1,1,1]
 ```
+
 从上面的小栗子可以学习到：1、伪数组概念；2、伪数组到数组的转换；3、Array.from还具备遍历的功能。
 
 
 
-生成新数组的方式：
+### 生成新数组的方式：
 
 ```javascript
 let array = Array(5) // 第一种
@@ -46,7 +50,7 @@ console.log(array.fill(9,0,2)) // [9,9,3,4,5]
 
 
 
-**ES5中如何查找一个元素？ES6？**
+### **ES5中如何查找一个元素？ES6？**
 
 查找有两个概念，一查找的目的是为了验证某个元素在这个数组中；二我要把满足条件的筛选出来
 
@@ -75,7 +79,7 @@ console.log(fin) // 1
 
 
 
-# Class
+## Class
 
 ```javascript
 ES5
@@ -117,12 +121,13 @@ monkey.eat() // i am eat hello
 // Animal.prototype.eat = function () {console.log('i am eat foot')}
 //ES6的这样写法等同于 ES5构造函数中在原型链中添加共有方法
 ```
+
 >  Class只是ES5用原型链声明类的语法糖
-> 语法糖？ -> 语法不一样，但最后的本质是一样的。
+>  语法糖？ -> 语法不一样，但最后的本质是一样的。
 
 
 
-# getter和setter
+## getter和setter
 
 ```JavaScript
 let _age = 4
@@ -150,7 +155,7 @@ console.log(dog.age); 8
 
 
 
-##### ES5将对象属性分为：
+### ES5将对象属性分为：
 
 内部属性(对象中有，但是不能随意用.访问属性)
 命名属性：所有能用.访问到的属性  
@@ -207,11 +212,11 @@ Object.defineProperty(eric,"eage", {
 ```
 
 > 保护对象有3个层次
->1、防扩展：禁止向对象中添加新属性
->Object.preventExtensions(obj) 
+> 1、防扩展：禁止向对象中添加新属性
+> Object.preventExtensions(obj) 
 > 原理： 其实每个对象都有一个隐藏的内部属性：extensible:true  所有对象默认都是可拓展的
->2、密封：在兼具方扩展同时，进一步禁止删除所有属性，属性值依然可以改
->Object.seal(obj) 
+> 2、密封：在兼具方扩展同时，进一步禁止删除所有属性，属性值依然可以改
+> Object.seal(obj) 
 > 原理：1.preventExtensions  2.自动将所有属性的configurable改为false
 > 3、冻结：在兼具密封的基础上，禁止修改所有属性值
 > Object.freeze(obj)
@@ -219,7 +224,7 @@ Object.defineProperty(eric,"eage", {
 
 
 
-##### 静态方法：
+### 静态方法：
 
 -> 不属于对象实例的，而属于这个类的。（实例对象是没有的）
 
@@ -255,7 +260,7 @@ dog.eat() // i am walking   i am eat foot
 
 
 
-##### 类的继承
+### 类的继承
 
 ```JavaScript
 // ES5
@@ -303,7 +308,7 @@ console.log(dog.age) // 5
 
 
 
-# Function  Updates
+## Function  Updates
 
 > 默认值、不确定参数、箭头函数
 
@@ -402,7 +407,7 @@ test.say() // test
 
 
 
-##### ES5对象中定义key,value以及函数 和ES6有啥区别
+### ES5对象中定义key,value以及函数 和ES6有啥区别
 
 ```javascript
 let x = 1; let y = 2;let z =3
@@ -434,9 +439,9 @@ console.log(obj) // {x:1,y:2,3:6}  {x:1,y:2,5:6}
 
 
 
-# 新的数据结构：
+## 新的数据结构：
 
-##### Set
+### Set
 
 ```javascript
 // Set 它所存储的数据必须是唯一的，接收的参数是一个可遍历的对象
@@ -452,7 +457,7 @@ for(let item of s) { console.log(item) } // 读数据 还可以使用forEach
 
 
 
-##### ES6中Map是什么，解决什么问题，怎么用？
+### ES6中Map是什么，解决什么问题，怎么用？
 
 ```javascript
 // Map 它的key可是是任何值
@@ -483,7 +488,7 @@ cosnole.log(map.get(0)) // 4
 
 
 
-# ES5和ES6中对象的拷贝
+### ES5和ES6中对象的拷贝
 
 ```javascript
 const target = {}
@@ -499,7 +504,7 @@ console.log(target) // {a: {c:5,b:2}}
 
 
 
-# 正则修饰符
+## 正则修饰符
 
 ```javascript
 const s = 'aaa_aa_a'
@@ -538,7 +543,7 @@ console.log(/[a-z]/iu.test('\u212A')) //  true
 
 
 
-##### ES6的Tag函数
+### ES6的Tag函数
 
 ```javascript
 function Price(Strings, type) {
@@ -560,7 +565,7 @@ console.log(showTxt)
 
 
 
-# ES6解构
+## ES6解构
 
 ```javascript
 // 数组解构
@@ -645,9 +650,10 @@ len // 5
 
 
 
-# ES5回调地狱和ES6-Promise
+## ES5回调地狱和ES6-Promise
 
 >  JS是单线程，异步操作不会立马执行，而是放到异步队列中。要先执行同步操作，执行完再执行异步操作
+
 ```javascript
 // callback
 function loadScript (src,callback) {
@@ -673,7 +679,8 @@ function loadScript (src) {
 }
 loadScript('./1.js').then(loadScript('./2.js')) // 1 2
 ```
-> **then的语法**
+
+> ### **then的语法**
 >
 > 1. .then是Promise对象原型上面的方法
 > 2. promise.then( onFulfilled, onRejected )  // (第一个必选，第二个可选。均为函数类型)对应resolve和reject
@@ -713,7 +720,8 @@ test(1).then((value)=> {
 
 
 ```
-> **Promise对错误的处理**
+
+> ### **Promise对错误的处理**
 
 ```JavaScript
 function loadScript(src) {
@@ -738,7 +746,9 @@ loadScript('./5.js')
 // catch也是promise原型对象上的方法,捕获的是链式操作上rejected抛出的错误(改变了promise状态)
 // 不要用 throw new Error 去触发 catch
 ```
+
 > Promise.all  ---并行异步操作
+
 ```javascript
 let p1 = Promise.resolve(1)
 let p2 = Promise.resolve(2)
@@ -752,7 +762,6 @@ Promise.all([p1, p2, p3]).then(res => {
 > Promise.race  ---静态方法
 
 ```javascript
-
 const p1 = () => {
     return new Promise((resolve,reject) => {
         setTimeout(function () {
@@ -774,7 +783,7 @@ Promise.race([p1(),p2()]).then(res => {
 
 
 
-# 反射 Reflect
+## 反射 Reflect
 
 ```javascript
 console.log(Math.floor.apply(null, [3.72])) // 3
@@ -849,7 +858,7 @@ Reflect.getPrototypeOf(arr) // 返回新设置的原型对象
 
 
 
-#  代理：Proxy
+##  代理：Proxy
 
 ```javascript
 let o = {
@@ -980,7 +989,7 @@ setTimeout(() => {
 
 
 
-# Generator 函数的语法
+## Generator 函数的语法
 
 > 调用Generator函数后，该函数并不执行，返回的也不是函数运行结果，而是一个指向内部状态的指针对象，下一步必须调用遍历器对象的next()方法，是指针移向下一个状态
 
@@ -1114,11 +1123,12 @@ console.log(ts.next().value) // 2
 console.log(ts.next().value) // 3
 ```
 
-# 遍历器接口
+## 遍历器接口
 
 > 输入是固定的，输出是有约束的，中间无所谓
 > 什么是可迭代协议-> 必须要有以Symbol.iterator为key的方法(没有就是不可迭代
 > 什么是迭代器协议->既然它可以迭代，它是怎样的一个迭代过程，这就是迭代器。要求必须返回一个对象，无参数且命名为next，next的返回值必须是done和value
+
 ```javascript
 let authors = {
   allAuthors: {
