@@ -34,9 +34,41 @@ console.log(2 ** 5); // Math.pow()的简写
 
 
 
-# Async\Await
+## Async\Await
+
+### await 只能出现在saync函数中
 
 ```javascript
+// 用一个小栗子演示一下async和Await的使用
+// 使得下面两个函数顺序执行。先准备好，再出去玩。
+function wait() {
+    setTimeout(() => {
+        console.log('朋友准备中....')
+    },1000)
+}
+function go() {
+    console.log('朋友准备完毕，一起出去玩')
+}
+
+async function test() {
+    let promise = new Promise(resolve => {
+        setTimeout(() => {
+        	console.log('朋友准备中....')
+        	resolve()
+        })
+    })
+    await promise
+    await go()
+}
+```
+
+
+
+### async实现原理
+
+> async函数的实现原理，就是将Generator函数和自动执行器，包装在一个函数里。
+
+```
 
 ```
 
