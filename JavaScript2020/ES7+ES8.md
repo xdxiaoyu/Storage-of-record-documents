@@ -113,3 +113,40 @@ for (let i = 1; i < 32; i++) {
 }
 ```
 
+## Object
+### 描述符
+
+> ES8如何获取Object数据的描述符？
+
+```JavaScript
+const data = {
+    Lilei： '78/50',
+    Lima: '58/40'
+}
+
+Object.defineProperty(data, 'Lima', {
+    enumerable: false,
+    writable: fasle
+})
+
+Object.keys(data) //["PortLand", "Dublin"]
+
+Object.getOwnPropertyDescriptors(data)
+//PortLand: {value: "78/50", writable: true, enumerable: true, configurable: true}
+//Dublin: {value: "88/52", writable: true, enumerable: true, configurable: true}
+//Lima: {value: "58/40", writable: false, enumerable: false, configurable: true}
+
+Object.getOwnPropertyDescriptors(data, 'Lima')
+//Lima: {value: "58/40", writable: false, enumerable: false, configurable: true}
+```
+
+
+
+
+
+# ES9
+
+## For await of
+
+> ES9中异步操作集合是如何遍历的？
+
