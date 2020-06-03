@@ -150,3 +150,93 @@ Object.getOwnPropertyDescriptors(data, 'Lima')
 
 > ES9中异步操作集合是如何遍历的？
 
+```javascript
+// for of 是用来遍历异步操作的（集合含有异步操作，拿不到正确结果）
+function Gen(time) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(time)
+        },time)
+    })
+}
+
+async function test() {
+    let arr = [Gen(2000), Gen(100), Gen(3000)]
+    for await (let item of arr) {
+        console.log(Date.now(), item)
+    }
+}
+
+test()
+//1591186908559 2000
+//1591186908560 100
+//1591186909560 3000
+```
+
+> 自定义数据结构异步遍历，该如何操作
+
+```javascript
+const obj = {
+    count: 0,
+    Gen (time) {
+        return new Promise((resolve,reject) => {
+            setTimeout(() => {
+                resolve({done: false,value:time})
+            },time)
+        })
+    },
+    [Symbol.asyncIterator] () {
+    let self = this
+    return {
+      next() {
+        self.count++
+        if(self.count < 4) {
+          return self.Gen(Math.random() * 1000)
+        } else {
+          return Promise.resolve({
+            done: true,
+            value: ''
+          })
+        }
+      }
+    }
+  }
+}
+async function test() {
+    for await (let item of obj) {
+        console.log(new Date(), item)
+    }
+}
+
+test()
+//Wed Jun 03 2020 20:26:08 GMT+0800 (中国标准时间) 534.6221733997855
+//Wed Jun 03 2020 20:26:08 GMT+0800 (中国标准时间) 118.35034861243953
+//Wed Jun 03 2020 20:26:09 GMT+0800 (中国标准时间) 575.9665993428888
+```
+
+
+
+## Promise
+
+> finally
+
+```javascript
+const Gen = (time) => {
+    return new Promise((resolve,reject) => {
+        setTimeout(() => {
+            if(time <500) {
+                reject(time)
+            } else {
+                resolve(time)
+            }
+        })
+    })
+}
+Gen(Math.random() * 1000)
+.then(val => console.log('resolve', val))
+.catch(err => console.log('reject',err))
+.finally(() => { console.log('finsh')})
+```
+
+## Object(Rest & Spread)
+
