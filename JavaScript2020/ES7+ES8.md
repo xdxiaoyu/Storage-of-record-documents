@@ -240,3 +240,36 @@ Gen(Math.random() * 1000)
 
 ## Object(Rest & Spread)
 
+```javascript
+const input = {
+    a:1,
+    b:2
+}
+const test = {
+    d:1
+}
+const ouput = {
+    ...input, //Spread扩展
+    c:3
+}
+console.log(ouput)
+// {a: 1, b: 2, c: 3}
+
+input.a = 4
+// 拷贝
+console.log(input,output)
+// {a: 4, b: 2} {a: 1, b: 2, c: 3}
+
+//Rest 
+const input = {
+	a: 1,
+	b: 2,
+	c: 3,
+	d: 4,
+	e: 5
+}
+const { a, b, ...rest } = input
+console.log(a, b, rest)
+//1 2 {c: 3, d: 4, e: 5}
+```
+
