@@ -273,3 +273,105 @@ console.log(a, b, rest)
 //1 2 {c: 3, d: 4, e: 5}
 ```
 
+## RegExp
+### dotAll
+
+```javascript
+// . 不能匹配换行符
+console.log(/foo.bar/.test('foo\nbar')) // false
+console.log(/foo.bar/us.test('foo\nbar')) // true
+// u 匹配4个字节的汉字
+
+// 判断是否开启dotAll 模式
+const re = /foo.bar/s
+console.log(re.dotAll)  // true
+console.log(re.flags)   // s
+```
+
+### 命名分组捕获
+
+```javascript
+console.log('2019-06-07'.match(/(\d{4})-(\d{2})-(\d{2})/))
+// ["2019-06-07", "2019", "06", "07", index: 0, input: "2019-06-07", groups: undefined]
+// index -我们的正则是从第几个字符开始匹配到的
+// input -完整的输入字符串
+
+//分组命名捕获
+const t = '2019-06-07'.match(/(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/)
+console.log(t.groups) // {year: "2019", month: "06", day: "07"}
+```
+
+### 先行断言
+
+```javascript
+let test = 'hello world'
+console.log(test.math(/hello(?=\sworld)/))  
+//["hello", index: 0, input: "hello world", groups: undefined]
+// 匹配hello的时候，紧接着匹配hello后面的东西是否满足条件
+// 先遇到一个条件，判断后面的是不是满足-先行断言
+```
+
+### 后行断言
+
+```javascript
+let test = 'hello world'
+console.log(test.match(/(?<=hello\s)world/)) 
+//["world", index: 6, input: "hello world", groups: undefined]
+console.log(test.match(/(?<!helle\s)world/)) 
+//["world", index: 6, input: "hello world", groups: undefined]
+```
+
+
+
+# ES10
+
+### flat()
+
+```javascript
+let arr = [1,[2,3],[4,5,[6,7,[8,9]]]]
+//arr.flat()  扁平化，按照一个可指定的深度递归遍历数组
+console.log(arr.flat(4))  
+//[1,2,3,4,5,6,7,8,9]
+```
+
+### flatMap()
+
+```javascript
+let arr = [1,2,3]
+console.log(arr.map(item => [item*2].flat()))
+// [2,4,6]
+console.log(arr.flatMap(item => [item*2]))
+// [2,4,6]
+```
+
+### trim
+
+> 去除空字符串
+
+```javascript
+let str ='   foo    '
+log(str.trimRight())  // trimEnd  去除末尾空字符串
+log(str.trimLeft())  // trimStart  去除末尾空字符串
+log(str.trim()) // 去除开头和末尾空字符串
+```
+
+### fromEntries
+
+```javascript
+const arr = [['foo', 1], ['bar',2]]
+log(arr[1][1]) // 2
+const obj = Object.fromEntries(arr) // 数组到obj
+log(obj.bar) // 2
+
+const obj = {
+    abc: 1,
+  	def: 2,
+	ghksks: 3
+}
+let res = Object.fromEntries(
+	Object.entries(obj).filter(([key,val]) => key.length === 3)
+)
+log(res) //{abc: 1, def: 2}
+
+```
+
