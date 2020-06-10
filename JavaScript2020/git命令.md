@@ -23,3 +23,36 @@ $ git stash pop
 $ git stash clear
 ```
 
+# Git提交多个远程仓库
+
+```jade
+// 使用.git/config查看git配置
+$ .git/config
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = https://gitee.com/dingxiaoxing/vue_shop.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = git@github.com:dingxingxing/vue_shop.git
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+```
+
+本身有一个远程仓库，使用命令增加一个远程仓库
+
+```JavaScript
+$ git remote set-url --add origin https://github.com/dingxingxing/vue_shop.git
+// 使用https地址，导致每次pull都需要输入账号密码才能成功，所以换成ssh协议地址可以避免每次提交都输账号密码
+
+$ git remote set-url --add origin git@github.com:dingxingxing/vue_shop.git
+
+// 使用 git remote -v 可查看远程仓库地址
+$ git remote -v
+```
+
