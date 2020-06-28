@@ -93,3 +93,59 @@ module.export = {
 
 > Bable 是一个工具链，主要用于将ECMAScript 2015+ 版本的代码转换为向后兼容的JavaScript语法，以便能够运行在当前和旧版本的浏览器或其他环境中。
 
+
+
+### 工作原理
+
+Code(代码)-parse(解析转换)-AST(抽象语法树) -transform(转换)-AST-plugins-AST-generator(还原)-Code
+
+![image-20200628164355873](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20200628164355873.png)
+
+
+
+> Babel首先是把原始的代码转成抽象语法树(AST)，然后基于这个AST做转换，每个转换被处理成插件的形式，最后把AST还原成代码。实际我们应用起来只需要三步：根据应用场景选择引用场景、安装工具、配置文件。
+
+
+
+npm install -D babel-loader @babel/core @babel/preset-env
+
+> babel-loader是webpack是一会要用的，要用babel-loader就一定要用到babel，要用到babel就需要安装babel/core。
+>
+> babel在做转换的时候，需要怎么处理呢？需要有一个规则和集合，babel/preset-env就是这个规则和集合
+
+
+
+
+
+# ESlint
+
+> ESlint最初是由Nicholas C.Zakas于2013年6月创建的开源项目。它的目标是提供一个插件化的、可组装的JavaScript和JSX工具。 
+
+## 规则
+
+ESLint每个规则会设置三个检查等级：
+
+"off" 或 0 - 关闭规则
+
+"warn" 或 1 - 开启规则，使用警告级别的错误：warn(不会导致程序退出)
+
+"error" 或 2 - 开启规则，使用错误级别的错误：error(当被触发的时候，程序会退出)
+
+
+
+## 插件
+
+ESLint通过插件的机制来拓展规则的建设、也就是说插件是用来自定义规则的，我们可以使用他人的插件也可以自己开发插件。
+
+插件的命名方式是：eslint-plugin- plugin-name，比较流行的ESLint插件有 eslint-pluigin-standard、eslint-plugin-vue
+
+
+
+## 配置
+
+ESlint被设计为完全可配置的，这意味着你可以关闭每一个规则而只运行基本语法验或混合匹配。有两种主要方式来配置SELint：
+
+1、**Configuration Comments** - 使用 JavaScript注释把配置信息直接嵌入到一个代码源文件中。
+
+2、**Configuration Files**- 使用JavaScript、JSON、或者YAML文件为整个目录（处理你的主目录）和它的子目录指定配置信息。可以配置一个独立的.eslintrc.*文件，或者直接在package.json文件里的eslintConfig字段指定配置，ESLint会查找和自动读取它们。
+
