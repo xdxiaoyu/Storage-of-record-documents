@@ -1,0 +1,52 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: dxiaoxing
+ * @Date: 2020-07-03 11:02:26
+ * @LastEditors: dxiaoxing
+ * @LastEditTime: 2020-07-03 21:53:37
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <h2>{{person.name}} --- {{person.age}}</h2>
+    <h3>{{person.fav}}</h3>
+    <ul>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+    </ul>
+    <h3>{{msg}}</h3>
+    <div v-text="msg"></div>
+    <div v-text="person.fav"></div>
+    <div v-html="htmlStr"></div>
+    <input type="text" v-model="msg">
+    <button v-on:click="click111"></button>
+  </div>
+  <script src="./MVue.js"></script>
+  <script>
+    let vm = new MVue({
+      el: '#app',
+      data: {
+        person: {
+          name: '星哥',
+          age: 18,
+          fav: '姑娘'
+        },
+        msg: '学习MVVM实现原理',
+        htmlStr: '<h4>大家学的怎么样</h4>'
+      }
+    })
+  </script>
+  
+</body>
+
+</html>
