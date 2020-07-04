@@ -29,7 +29,8 @@
     <div v-text="person.fav"></div>
     <div v-html="htmlStr"></div>
     <input type="text" v-model="msg">
-    <button v-on:click="click111"></button>
+    <button v-on:click="click111">按钮on</button>
+    <button @click="click111">按钮@</button>
   </div>
   <script src="./MVue.js"></script>
   <script>
@@ -43,6 +44,11 @@
         },
         msg: '学习MVVM实现原理',
         htmlStr: '<h4>大家学的怎么样</h4>'
+      },
+      methods: {
+        click111() {
+          console.log(this)
+        }
       }
     })
   </script>

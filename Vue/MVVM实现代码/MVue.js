@@ -36,7 +36,10 @@ const compileUtil = {
     this.updater.modelUpdater(node, value)
   },
   on(node, expre, vm, eventName) {
-
+    let fn = vm.$options.methods && vm.$options.methods[expre]
+    // console.log('thsi:', this,vm);
+    
+    node.addEventListener(eventName, fn.bind(vm),false)
   },
 
   updater: {
@@ -101,8 +104,14 @@ class Compile {
 
         // 删除有指令的标签上的属性
         node.removeAttribute('v-' + dirctive)
+      } else if(this.isEventName(name)) {
+        let [,eventName] = name.split('@')
+        compileUtil['on'](node, value, this.vm, eventName)
       }
     })
+  }
+  isEventName(attrName) {
+    return attrName.startsWith('@')
   }
   compileText(node) {
     const content = node.textContent
