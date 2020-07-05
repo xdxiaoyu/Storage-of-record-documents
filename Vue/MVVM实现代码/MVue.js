@@ -28,6 +28,11 @@ const compileUtil = {
   },
   html(node, expre, vm) {
     const value = this.getVal(expre, vm)
+    // 绑定watcher
+    new watcher(vm, expre, (newVal) => {
+      this.updater.htmlUpdater(node, newVal)
+    })
+    
     this.updater.htmlUpdater(node, value)
   },
   model(node, expre, vm) {
