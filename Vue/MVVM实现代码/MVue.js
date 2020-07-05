@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-03 11:08:59
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-03 21:50:21
+ * @LastEditTime: 2020-07-05 18:22:00
  */
 const compileUtil = {
   getVal(expre, vm) {
@@ -18,7 +18,6 @@ const compileUtil = {
     if (expre.indexOf('{{') !== -1) {
       // 处理{{person.name}}
       value = expre.replace(/\{\{(.+?)\}\}/g, (...arges) => {
-        console.log(arges)
         return this.getVal(arges[1],vm)
       })
     } else {
@@ -37,12 +36,17 @@ const compileUtil = {
   },
   on(node, expre, vm, eventName) {
     let fn = vm.$options.methods && vm.$options.methods[expre]
-    // console.log('thsi:', this,vm);
-    
     node.addEventListener(eventName, fn.bind(vm),false)
+  },
+  bind(node, expre, vm, attrName) {
+    const value = this.getVal(expre,vm)
+    this.updater.bindUpdate(node,attrName, value)
   },
 
   updater: {
+    bindUpdate(node,attrName,value) {
+      node[attrName] = value
+    },
     modelUpdater(node, value) {
       node.value = value
     },
@@ -107,8 +111,18 @@ class Compile {
       } else if(this.isEventName(name)) {
         let [,eventName] = name.split('@')
         compileUtil['on'](node, value, this.vm, eventName)
+        // 删除有指令的标签上的属性
+        node.removeAttribute('@' + eventName)
+      } else if(this.isBindName(name)) {
+        let [,eventName] = name.split(':')
+        compileUtil['bind'](node, value, this.vm, eventName)
+        // 删除有指令的标签上的属性
+        node.removeAttribute(':' + eventName)
       }
     })
+  }
+  isBindName(attrName) {
+    return attrName.startsWith(':')
   }
   isEventName(attrName) {
     return attrName.startsWith('@')
@@ -145,6 +159,7 @@ class MVue {
     this.$options = options
     if (this.$el) {
       // 1.实现一个数据的观察者
+      new Observer(this.$data)
       // 2.实现一个指令解析器
       new Compile(this.$el, this)
     }
