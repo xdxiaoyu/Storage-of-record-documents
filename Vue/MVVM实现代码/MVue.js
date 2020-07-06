@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-03 11:08:59
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-06 21:19:31
+ * @LastEditTime: 2020-07-06 21:50:16
  */
 const compileUtil = {
   getVal(expre, vm) {
@@ -194,15 +194,28 @@ class MVue {
     }
   }
   proxyData(data) {
-    for (const key in data) {
-      Object.defineProperty(this,key, {
-        get() {
-          return data[key]
-        },
-        set(newVal) {
-          data[key] = newVal
-        }
-      }) 
-    }
+    // for (const key in data) {
+    //   Object.defineProperty(this,key, {
+    //     get() {
+    //       return data[key]
+    //     },
+    //     set(newVal) {
+    //       data[key] = newVal
+    //     }
+    //   }) 
+    // }
+    let proxy = new Proxy(data, {
+      get(trage,key) {
+        return Reflect.get(trage,key)
+      },
+      set(trage,key,newVal) {
+        return Reflect.set(trage,key,newVal)
+      }
+    })
+    Object.assign(
+      this,
+      proxy
+    )
+    console.log(this);
   }
 }
