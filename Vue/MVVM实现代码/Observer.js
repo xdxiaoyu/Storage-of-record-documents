@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-05 18:21:10
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-05 19:59:13
+ * @LastEditTime: 2020-07-06 18:01:46
  */
 class watcher {
   constructor(vm,expre,cb) {
@@ -16,7 +16,7 @@ class watcher {
   }
   getOldVal() {
     Dep.target = this
-    const oldVal =  compileUtil.getVal(this.expre, this.vm)
+    const oldVal = compileUtil.getVal(this.expre, this.vm)
     Dep.target = null
     return oldVal
   }
@@ -31,7 +31,6 @@ class watcher {
 class Dep {
   constructor() {
     this.subs = []
-    this.a = 111
   }
   // 收集观察者
   addSub(watcher) {
@@ -39,8 +38,6 @@ class Dep {
   }
   // 通知观察者去更新
   notify() {
-    console.log('观察者，', this.subs);
-    
     this.subs.forEach(w => w.update())
   }
 }

@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-03 11:08:59
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-05 18:22:00
+ * @LastEditTime: 2020-07-06 21:19:31
  */
 const compileUtil = {
   getVal(expre, vm) {
@@ -12,18 +12,30 @@ const compileUtil = {
       return data[currentVal]
     }, vm.$data)
   },
+  setVal(expre, vm, inputVal) {
+    return expre.split('.').reduce((data, currentVal) => {
+      return data[currentVal] = inputVal
+    }, vm.$data)
+  },
+  getContentVal(expre, vm) {
+    return expre.replace(/\{\{(.+?)\}\}/g, (...arges) => {
+      return this.getVal(arges[1], vm)
+    })
+  },
   // expre 自定义属性绑定的值
   text(node, expre, vm) {
     let value;
     if (expre.indexOf('{{') !== -1) {
       // 处理{{person.name}}
       value = expre.replace(/\{\{(.+?)\}\}/g, (...arges) => {
-        return this.getVal(arges[1],vm)
+        new watcher(vm, arges[1], () => {
+          this.updater.textUpdater(node, this.getContentVal(expre, vm))
+        })
+        return this.getVal(arges[1], vm)
       })
     } else {
       value = this.getVal(expre, vm)
     }
-
     this.updater.textUpdater(node, value)
   },
   html(node, expre, vm) {
@@ -32,24 +44,34 @@ const compileUtil = {
     new watcher(vm, expre, (newVal) => {
       this.updater.htmlUpdater(node, newVal)
     })
-    
+
     this.updater.htmlUpdater(node, value)
   },
   model(node, expre, vm) {
     const value = this.getVal(expre, vm)
+    // 绑定更新函数 数据=>视图
+    new watcher(vm, expre, (newVal) => {
+      this.updater.modelUpdater(node, newVal)
+    })
+    // 视图=>数据=>视图
+    node.addEventListener('input', (e) => {
+      // 设置值
+      this.setVal(expre, vm, e.target.value)
+    })
+
     this.updater.modelUpdater(node, value)
   },
   on(node, expre, vm, eventName) {
     let fn = vm.$options.methods && vm.$options.methods[expre]
-    node.addEventListener(eventName, fn.bind(vm),false)
+    node.addEventListener(eventName, fn.bind(vm), false)
   },
   bind(node, expre, vm, attrName) {
-    const value = this.getVal(expre,vm)
-    this.updater.bindUpdate(node,attrName, value)
+    const value = this.getVal(expre, vm)
+    this.updater.bindUpdate(node, attrName, value)
   },
 
   updater: {
-    bindUpdate(node,attrName,value) {
+    bindUpdate(node, attrName, value) {
       node[attrName] = value
     },
     modelUpdater(node, value) {
@@ -59,6 +81,7 @@ const compileUtil = {
       node.innerHTML = value
     },
     textUpdater(node, value) {
+      console.log(777, value);
       node.textContent = value
     }
   }
@@ -113,13 +136,13 @@ class Compile {
 
         // 删除有指令的标签上的属性
         node.removeAttribute('v-' + dirctive)
-      } else if(this.isEventName(name)) {
-        let [,eventName] = name.split('@')
+      } else if (this.isEventName(name)) {
+        let [, eventName] = name.split('@')
         compileUtil['on'](node, value, this.vm, eventName)
         // 删除有指令的标签上的属性
         node.removeAttribute('@' + eventName)
-      } else if(this.isBindName(name)) {
-        let [,eventName] = name.split(':')
+      } else if (this.isBindName(name)) {
+        let [, eventName] = name.split(':')
         compileUtil['bind'](node, value, this.vm, eventName)
         // 删除有指令的标签上的属性
         node.removeAttribute(':' + eventName)
@@ -167,6 +190,19 @@ class MVue {
       new Observer(this.$data)
       // 2.实现一个指令解析器
       new Compile(this.$el, this)
+      this.proxyData(this.$data)
+    }
+  }
+  proxyData(data) {
+    for (const key in data) {
+      Object.defineProperty(this,key, {
+        get() {
+          return data[key]
+        },
+        set(newVal) {
+          data[key] = newVal
+        }
+      }) 
     }
   }
 }
