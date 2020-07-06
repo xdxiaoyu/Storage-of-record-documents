@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-03 11:08:59
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-06 21:50:16
+ * @LastEditTime: 2020-07-06 22:39:38
  */
 const compileUtil = {
   getVal(expre, vm) {
@@ -81,7 +81,6 @@ const compileUtil = {
       node.innerHTML = value
     },
     textUpdater(node, value) {
-      console.log(777, value);
       node.textContent = value
     }
   }
@@ -104,18 +103,21 @@ class Compile {
 
   }
   compile(fragment) {
+    
     // 1.获取子节点
     const childNodes = fragment.childNodes;
+    
     [...childNodes].forEach(child => {
+
       if (this.isElementNode(child)) {
         // 是元素节点
         // 编译元素节点
-        // console.log('元素节点:',child)
+        console.log('元素节点:',child)
         this.compileElement(child)
       } else {
         // 文本节点
         // 编译文本节点
-        // console.log('文本节点:',child)
+        console.log('文本节点:',child)
         this.compileText(child)
       }
 
@@ -216,6 +218,5 @@ class MVue {
       this,
       proxy
     )
-    console.log(this);
   }
 }
