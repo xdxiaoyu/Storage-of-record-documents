@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-05 18:21:10
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-06 18:01:46
+ * @LastEditTime: 2020-07-13 19:56:19
  */
 class watcher {
   constructor(vm,expre,cb) {
@@ -62,6 +62,7 @@ class Observer {
       configurable: false,
       get () {
         // 订阅数据变化时，往Dep中添加观察者
+        console.log(Dep.target);
         Dep.target && dep.addSub(Dep.target)
         return value
       },

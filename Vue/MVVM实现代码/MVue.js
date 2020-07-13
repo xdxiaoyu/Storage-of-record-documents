@@ -4,8 +4,9 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-03 11:08:59
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-13 11:45:37
+ * @LastEditTime: 2020-07-13 19:30:00
  */
+
 const compileUtil = {
   getVal(expre, vm) {
     return expre.split('.').reduce((data, currentVal) => {
@@ -34,7 +35,11 @@ const compileUtil = {
         return this.getVal(arges[1], vm)
       })
     } else {
+      new watcher(vm, expre, (newVal) => {
+        this.updater.textUpdater(node, newVal)
+      })
       value = this.getVal(expre, vm)
+      
     }
     this.updater.textUpdater(node, value)
   },
@@ -87,9 +92,10 @@ const compileUtil = {
 
 }
 
+// 定义一个Compile类解析元素节点和指令
 class Compile {
   constructor(el, vm) {
-    // 判断el是否是元素节点对象
+    //  // 判断el是否是元素节点对象，不是就通过DOM获取
     this.el = this.isElementNode(el) ? el : document.querySelector(el)
     this.vm = vm
     // 1.获取文档碎片对象 放入内存中会减少页面的回流和重绘
@@ -125,13 +131,14 @@ class Compile {
     })
   }
   compileElement(node) {
+    // 获得元素属性集合
     const attributes = node.attributes;
     [...attributes].forEach(attr => {
       const { name, value } = attr
       if (this.isDirective(name)) { // 是一个指令 v-text v-html v-model v-on:click
         const [, dirctive] = name.split('-')
         const [dirName, eventName] = dirctive.split(':')
-        // 更新数据 数据驱动视图
+        // 将数据渲染到视图上 初始化视图（数据驱动视图）
         compileUtil[dirName](node, value, this.vm, eventName)
 
         // 删除有指令的标签上的属性
@@ -142,10 +149,10 @@ class Compile {
         // 删除有指令的标签上的属性
         node.removeAttribute('@' + eventName)
       } else if (this.isBindName(name)) {
-        let [, eventName] = name.split(':')
-        compileUtil['bind'](node, value, this.vm, eventName)
+        let [, attrName] = name.split(':')
+        compileUtil['bind'](node, value, this.vm, attrName)
         // 删除有指令的标签上的属性
-        node.removeAttribute(':' + eventName)
+        node.removeAttribute(':' + attrName)
       }
     })
   }
@@ -180,6 +187,7 @@ class Compile {
   }
 }
 
+// 先创建一个MVue类,它是一个入口
 class MVue {
   constructor(options) {
     this.$el = options.el
