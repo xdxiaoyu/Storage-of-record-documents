@@ -62,7 +62,6 @@ class Observer {
       configurable: false,
       get () {
         // 订阅数据变化时，往Dep中添加观察者
-        console.log(Dep.target);
         Dep.target && dep.addSub(Dep.target)
         return value
       },

@@ -165,7 +165,6 @@ class Compile {
   compileText(node) {
     const content = node.textContent
     if (/\{\{(.+?)\}\}/.test(content)) {
-      // console.log(content)
       compileUtil['text'](node, content, this.vm)
     }
   }

@@ -19,7 +19,7 @@
 
 实现的流程图：
 
-![mvvm](C:\Users\Administrator\Pictures\mvvm.png)
+![mvvm](<https://img-blog.csdnimg.cn/20190104151402821.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2R3ZnJvc3Q=,size_16,color_FFFFFF,t_70>)
 
 
 
@@ -204,8 +204,9 @@ class Compile {
     // 编译文本节点
     compileText(node) {
         const content = node.textContent
-        
-        if(/\{\{(.+?)\}\}/g)
+        if(/\{\{(.+?)\}\}/.test(content)) {
+            compileUtil['text'](node, content, this.vm)
+        }
     }
     
     // 判断属性是不是指令
@@ -427,7 +428,7 @@ class Observer {
                 return value
             },
             set: (newValue) => {
-                // 对新数据进行劫持纪监听
+                // 对新数据进行劫持监听
                 this.observer(newValue)
                 if(newValue !== value) {
                     value = newValue
@@ -444,3 +445,12 @@ class Observer {
 
 ```
 
+## 3、总结
+
+其实复杂的地方有三点：
+
+1、指令解析的各种操作有点复杂饶人，其中包含DOM的基本操作和一些ES中的API使用。但是你静下心去读去想，肯定是能理顺的。
+
+2、数据劫持中Dep的理解，一是收集观察者的集合，二是连接Observer和watcher的桥梁。
+
+3、观察者是什么时候进行绑定的？又是如何工作实现了数据驱动视图，视图驱动数据驱动视图的。
