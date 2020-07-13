@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-03 11:08:59
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-06 22:39:38
+ * @LastEditTime: 2020-07-13 11:45:37
  */
 const compileUtil = {
   getVal(expre, vm) {
@@ -112,12 +112,10 @@ class Compile {
       if (this.isElementNode(child)) {
         // 是元素节点
         // 编译元素节点
-        console.log('元素节点:',child)
         this.compileElement(child)
       } else {
         // 文本节点
         // 编译文本节点
-        console.log('文本节点:',child)
         this.compileText(child)
       }
 
