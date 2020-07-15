@@ -420,6 +420,8 @@ data: {
 
 在v-for中，既可以使用数组也可以使用对象
 
+
+
 ### 状态维护
 
 当Vue正在更新使用v-for渲染列表时，它默认使用“就地更新策略”。如果数据项的顺序被改变，Vue将不会移动DOM元素来匹配数据项的顺序，而是就地更新每一个元素，并确保它们在每个位置索引位置正确渲染。
@@ -427,3 +429,129 @@ data: {
 > 不要使用对象或数组之类的非基本类型值作为v-for的key。请用字符串或数值型的值。
 
 key的特殊主要用在Vue的虚拟DOM算法，在新旧nodes对比时辨识VNodes。如果不使用key，Vue会使用一种最大限度减少动态元素并且尽可能的尝试就地修改/复用相同类型元素的算法。而使用key时，它会基于key的变化重新排列元素顺序，并且会移除key不存在的元素
+
+
+
+
+
+## 事件处理
+
+### 内联处理器的方法
+
+有时也需要在内联语句处理器中访问原始的DOM事件。可以使用特殊变量$event把它传入方法：
+
+```html
+<button v-on:click="warn('Form cannot be submitted yet.', $event)">
+  Submit
+</button>
+```
+
+```js
+// ...
+methods: {
+  warn: function (message, event) {
+    // 现在我们可以访问原生事件对象
+    if (event) {
+      event.preventDefault()
+    }
+    alert(message)
+  }
+}
+```
+
+
+
+### 事件修饰符
+
+以上方法虽然可以实现，但是更好的方式是：**方法只有纯粹的数据逻辑，而不是去处理DOM事件细节**。为了解决这个问题，Vue提供了事件修饰符。
+
+​	
+
+```js
+.stop  // 等同于js中的event.stopPropagation(),防止事件冒泡 
+.prevent // 取消默认事件，比如a标签的链接跳转
+.caputer // 捕获事件，点击子节点，由外到内父节点->子节点触发点击事件（不加是由内到外）
+.self // 只触发自己范围内的事件，不会包含子元素
+.once // 只执行一次点击
+```
+
+```js
+.passive
+```
+
+> 【浏览器只有等内核线程执行到事件监听器对应的JavaScript代码时，才能知道内部是否会调用preventDefault函数来阻止事件的默认行为，所以浏览器本身是没有办法对这种场景进行优化的。这种场景下，用户的手势事件无法快速产生，会导致页面无法快速执行滑动逻辑，从而让用户感觉到页面卡顿。】
+>
+> 通俗点说就是每次事件产生，浏览器都会去查询一下是否有preventDefault阻止该次事件的默认动作。我们加上passive就是为了告诉浏览器，不用查询了，我们没用preventDefault阻止默认动作。
+
+
+
+
+
+## 表单输入绑定
+
+### 修饰符
+
+#### .lazy
+
+在默认情况下，`v-model` 在每次 `input` 事件触发后将输入框的值与数据进行同步 。你可以添加 `lazy` 修饰符，从而转为在 `change` 事件_之后_进行同步：
+
+```html
+<!-- 在“change”时而非“input”时更新 -->
+<input v-model.lazy="msg">
+
+<!--注：ElementUI的input输入框不支持 `v-model` 修饰符-->
+```
+
+
+
+#### number
+
+可以自动将用户输入的值转换成数值类型：
+
+> 只有这个值无法被 parsenFloat()解析，则会返回原始的值
+
+```html
+<input v-model.number="age" type="number">
+```
+
+
+
+#### .trim
+
+过滤用户输入的收尾空白字符：
+
+```html
+<input v-model.trim="msg">
+```
+
+
+
+
+
+## 组件基础
+
+### 通过Prop向子组件传递数据
+
+#### 传入一个对象的所有property
+
+> 如果想将一个对象的所有property都作为prop传入，可以不用每个参数分别使用v-bind
+
+```js
+post: {
+  id: 1,
+  title: 'My Journey with Vue'
+}
+```
+
+下面的模板
+
+```html
+<blog-post v-bind="post"></blog-post>
+
+<!-- 等价于 -->
+<blog-post
+  v-bind:id="post.id"
+  v-bind:title="post.title"
+></blog-post>
+```
+
