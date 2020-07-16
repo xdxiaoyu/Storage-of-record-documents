@@ -555,3 +555,36 @@ post: {
 ></blog-post>
 ```
 
+
+
+### 单向数据流
+
+所有的prop传值都让父子prop之间形成一个**单行下行绑定**。每次父组件发生变更时，子组件中所有的prop都将会刷新为最新的值，这说明你不应该在子组件内部改prop（强行做，Vue会有警告）
+
+> 注：JavaScript中数组和对象是通过引用传入的，对于一个数组或对象类型的prop来说，在子组件中改变变更这个对象的本身将会影响父组件的状态
+
+
+
+## Prop验证
+
+```js
+Vue.component('my-component', {
+    props: {
+        // 基础的类型检查（'null' 和 'undefined'会通过任何类型的验证
+        propA: Number,
+        // 多个类型
+        propB: [Number, String]
+        // 必填字符串
+        propC: [
+        	type: String,
+        	required: true
+        ]
+    }
+})
+```
+
+
+
+## 自定义事件
+
+**始终使用 kebab-case 的事件名**。
