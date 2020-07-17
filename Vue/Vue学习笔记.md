@@ -588,3 +588,190 @@ Vue.component('my-component', {
 ## 自定义事件
 
 **始终使用 kebab-case 的事件名**。
+
+
+
+## 插槽
+
+### 编译作用域
+
+父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的。
+
+### [具名插槽](https://cn.vuejs.org/v2/guide/components-slots.html#具名插槽)
+
+### [作用域插槽](https://cn.vuejs.org/v2/guide/components-slots.html#作用域插槽)
+
+
+
+
+
+## 混入
+
+### [基础](https://cn.vuejs.org/v2/guide/mixins.html#基础)
+
+> 混入(mixin)提供了一种非常灵活的方式，来分发Vue组件中的可复用功能。一个混入对象可以包含任意组件选项。当组件使用混入对象时，所有混入对象的选项将被混入该组件本身的选项
+
+### [选项合并](https://cn.vuejs.org/v2/guide/mixins.html#选项合并)
+
+当组件和混入对象有同名选项是，
+数据对象在内部会进行递归合并，并且在发生冲突时以组件数据优先
+
+```javascript
+var mixin = {
+    data() {
+    	return {
+            message: 'hello',
+            foo: 'abc'
+        }
+	}
+}
+
+new Vue({
+    mixin: [mixin],
+    data() {
+        return {
+            message: 'goodbye',
+            bar: 'def'
+        }
+    },
+    created() {
+        console.log(this.$data)
+        // => {message: 'goodbye', foo:'adc', bar: 'def'}
+    }
+})
+```
+
+
+
+同名钩子函数将合并为一个数组，因此都将被调用。只是混入对象的钩子将在组件自身钩子**之前**调用
+
+值为对象的选项，例如methods、components和directives，将别合并成同一个对象。**两个对象键名冲突时，取组件对象的键值对**。
+
+
+
+### 自定义选项合并策略
+
+自定义选项将使用默认策略，即简单地覆盖已有值。如果想要自定义选项以自定义逻辑合并，可以向 **`Vue.config.optionMergeStrategies`**添加一个函数
+
+
+
+## 自定义指令
+
+### [钩子函数](https://cn.vuejs.org/v2/guide/custom-directive.html#钩子函数)
+
+### [钩子函数参数](https://cn.vuejs.org/v2/guide/custom-directive.html#钩子函数参数)
+
+### [动态指令参数](https://cn.vuejs.org/v2/guide/custom-directive.html#动态指令参数)
+
+### 对象字面量
+
+如果指令需要多个值，可以传入一个JavaScript对象字面量。指令函数可以接受所有合法的JavaScript表达式
+
+```html
+<div v-demo="{ color: 'white', text: 'hello!' }"></div>
+```
+
+```javascript
+Vue.directive('demo', function (el, binding) {
+  console.log(binding.value.color) // => "white"
+  console.log(binding.value.text)  // => "hello!"
+})
+```
+
+
+
+
+
+## 渲染函数 & JSX 
+
+看懂百分之30%，过段时间再看 
+
+
+
+## 路由
+
+### 编程式导航和声明式导航
+
+```js
+//  声明式
+<router-link :to="....">
+
+// 编程式
+router.push(...)
+// ex:       
+// 字符串
+router.push('home')
+// 对象
+router.push({ path: 'home' })
+// 命名的路由
+router.push({ name: 'user', params: { userId: '123' }})
+// 带查询参数，变成 /register?plan=private
+router.push({ path: 'register', query: { plan: 'private' }})
+```
+
+
+
+### 导航守卫
+
+#### 全局前置守卫
+
+router.beforeEach
+
+#### 全局解析守卫
+
+router.beforeResolve
+
+#### 全局后置钩子
+
+```js
+router.afterEach((to, from) => {
+  // ...
+})
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
