@@ -1,8 +1,10 @@
-# Vue中API学习笔记
+# Vue必会的基础知识
 
 Vue中的数据和DOM已经被关联起来，所有的东西都是响应式的。注意我们不再和HTML直接交互。一个Vue应用会将其挂载到DOM元素上然后对齐进行完全的控制，那个HTML是我们的入口，但是其他的都会发生在新创建的Vue实例内部。详情可见[MVVM原理极其实现](https://github.com/dingxingxing/Storage-of-record-documents/tree/master/Vue)。
 
 
+
+**下面是Vue的一些基本知识点相关学习跟应用，差缺补漏吧。Vue.js官网好好看一遍还是很香的。**
 
 ## Vue实例
 ### 1、实例声明周期钩子函数
