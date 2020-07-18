@@ -785,6 +785,189 @@ router.afterEach((to, from) => {
 
 
 
+## Vuex
+
+### State
+
+> state 提供唯一的公共数据源。所有共享的数据要统一放到Store的State中进行储存
+
+组件访问State中数据的第一种方式：
+
+```js
+this.$store.state.全局数据名称
+```
+
+组件访问State中数据的第二种方式：
+
+```js
+// 1.从Vuex中按需导入`mapState`函数
+import { mapState } from 'vuex'
+
+// 2.将全局数据，映射为当前组件的计算属性
+computed: {
+    ...mapState(['count'])
+}
+```
+
+
+
+### Mutation
+
+> Mutation用于变更Store中的数据。
+
+① 只能通过muntation变更Store数据，不可以直接操作Store中的数据。
+
+② 通过这种方式虽然操作起来稍微繁琐一些，但是可以集中监控所有数据的变化。
+
+```js
+// 定义motation
+mutations: {
+    add(state) {
+        // 变更状态
+        state.count++
+    }，
+    // 传参
+    addN(state,n) {
+        state.count+=n
+    }
+}
+
+//组件中触发mutation
+methods: {
+    handle() {
+        // 触发mutations 的第一种方式
+        this.$store.commit('add')
+        // 触发mutations传参
+        this.$store.commit('addN', 3)
+    }
+}
+```
+
+
+
+this.$store.commit()是触发mutations的第一种方式，触发mutations的**第二种方式**:
+
+
+
+```js
+// 1.从vuex中按需导入`mapMutations`函数
+import { mapMutations } from 'vuex'
+
+// 2.将指定的 mutations函数，映射为当前组件的 methods函数
+methods: {
+    ...mapMutations(['add','addN'])
+}
+```
+
+
+
+### Action
+
+> Action用于处理异步任务。
+
+如果通过异步变更数据，必须通过Action，而不能使用Mutation，但是在Action中还是要通过触发Mutation的方式间接变更数据。
+
+```js
+// 定义Action
+actions: {
+    // context 第一个形参可以理解为当前new 的实例
+    addAsync(context,n) {
+        setTimeout(() => {
+            context.commit('addN',n)
+        },1000)
+    }
+}
+
+// 触发Action
+methods: {
+    handle: {
+        // 触发actions 的第一种方式
+        // 携带参数
+        this.$store.dispath('addAsync', 5)
+    }
+}
+```
+
+
+
+this.$store.dispatch()是触发actions的第一种方式，触发actions的**第二种方式**：
+
+```js
+// 1.从vuex中按需导入`mapActions`函数
+import { mapActions } from 'vuex'
+
+// 2.将指定的actions函数，映射为当前组件的methods函数
+methods: {
+    ...mapActions(['addAsync', 'addNAsync'])
+}
+```
+
+
+
+### Getter
+
+> Getter用于对Store中的数据进行加工处理形成新的数据。
+
+① Getter可以对Store中已有的数据加工处理之后形成新的数据，类似Vue的计算属性
+
+② Store中数据发生变化，Getter的数据也会跟着变化。
+
+```js
+// 定义Getter
+const strore = new Vuex.Store({
+    state: {
+        count: 0
+    },
+    getters: {
+        showNum: state => {
+            return '当前最新的数量是【'+ state.count +'】'
+        }
+    }
+})
+```
+
+使用getters的第一种方式：
+
+```js
+this.$store.getters.名称
+```
+
+使用getters的第二种方式：
+
+```js
+import { MapGetters } from 'vuex'
+
+computed: {
+    ...mapGetters(['showNum'])
+}
+```
+
+
+
+### namespaced
+
+这个属性是用来解决不同模块命名冲突的问题：
+
+```js
+// 不同页面引入getter、actions、mutations时，要加上模块名
+// ex
+...mapGetters('BadInfo', ['DialogDate'])
+
+// 第二种写法
+this.$store.commit('XXX/SETXXX',sth);
+this.$store.getters['XXX/getXXX'];
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
