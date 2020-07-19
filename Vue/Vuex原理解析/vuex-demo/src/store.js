@@ -8,7 +8,21 @@ export default new Vuex.Store({
   state: {
     age: 10
   },
-  mutations: {},
-  actions: {},
-  getter: {}
+  mutations: {
+    syncChange (state, payload) {
+      state.age += payload
+    }
+  },
+  actions: {
+    asyncChange ({ commit }, payload) {
+      setTimeout(() => {
+        commit('syncChange', payload)
+      }, 1000)
+    }
+  },
+  getters: {
+    myAge (state) {
+      return state.age + 20
+    }
+  }
 })

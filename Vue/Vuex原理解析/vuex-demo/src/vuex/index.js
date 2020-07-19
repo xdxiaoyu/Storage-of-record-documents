@@ -1,15 +1,61 @@
 let Vue
+const forEach = (obj, callback) => {
+  Object.keys(obj).forEach(key => {
+    callback(key, obj[key])
+  })
+}
 class Store { // 用户获取的是这个Store类的实例
-  constructor (options) {
+  constructor(options) {
     // 获取用户new 实例时传入的所有属性
-    // this.state = options.state
-    this.state = {
-      age: 100
-    }
-    console.log(options)
+    this.vm = new Vue({ // 创建vue的实例 保证更新状态可以刷新视图
+      data: { // 默认这个状态，会被使用Object.defineProperty重新定义
+        state: options.state
+      }
+    })
+
+    // 实现getters
+    const getters = options.getters // 获取用户传入的getters
+    this.getters = {}
+    forEach(getters, (getterNmae, value) => {
+      Object.defineProperty(this.getters, getterNmae, {
+        get: () => {
+          return value(this.state)
+        }
+      })
+    })
+    // 实现commit
+    // 需要将用户定义的mutation 放到store上 订阅 发布 让数组中的函数依次执行
+    const mutations = options.mutations
+    this.mutations = {}
+    forEach(mutations, (mutationName, value) => {
+      this.mutations[mutationName] = (payload) => { // 订阅
+        value(this.state, payload)
+      }
+    })
+    // 实现dispatch
+    const actions = options.actions
+    this.actions = {}
+    forEach(actions, (actionName, value) => {
+      // 最后我们会做一个监控 看一下是不是异步方法都在action中执行的，而不是在mutation中执行的
+      this.actions[actionName] = (payload) => {
+        value(this, payload)
+      }
+    })
+  }
+
+  commit = (mutationName, payload) => { // es7写法 这个里面的this 永远指向当前的store实例
+    this.mutations[mutationName](payload) // 发布
+  }
+
+  dispatch = (actionName, payload) => { // 发布的时候会找到对应的action执行
+    this.actions[actionName](payload)
+  }
+
+  // es6 中类的访问器
+  get state () {
+    return this.vm.state
   }
 }
-
 // 官方API
 // 如果插件是一个函数，它会被作为 install 方法。install 方法调用时，会将 Vue 作为参数传入。
 const install = (_Vue) => { // Vue构造函数
