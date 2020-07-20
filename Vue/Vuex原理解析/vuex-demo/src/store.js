@@ -1,5 +1,13 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: dxiaoxing
+ * @Date: 2020-07-20 08:27:59
+ * @LastEditors: dxiaoxing
+ * @LastEditTime: 2020-07-20 17:39:03
+ */ 
 import Vue from 'vue'
-import Vuex from './vuex/index'
+import Vuex from './vuex/index1'
 
 Vue.use(Vuex) // 默认会执行当前插件的install方法
 
