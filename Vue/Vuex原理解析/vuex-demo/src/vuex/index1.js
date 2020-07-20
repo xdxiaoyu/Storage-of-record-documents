@@ -15,7 +15,6 @@ const forEach = (obj, callback) => {
 class ModuleCollection {
   constructor(options) {
     // 深度将所有的子模块都遍历一遍
-    // console.log(options)
     this.register([], options)
   }
   register(path, rootModule) {
@@ -44,6 +43,25 @@ class ModuleCollection {
     }
   }
 }
+function installModule(store,rootState,path,rawModule) {
+  let getters = rawModule._raw.getters
+  if(getters) {
+    forEach(getters,(getterName, value) => {
+      Object.defineProperty(store.getters,getterName, {
+        get: () => {
+          return value(rawModule.state)
+        }
+      })
+    })
+  }
+  let mutations = rawModule._raw.mutations
+  if(mutations) {
+    forEach(mutations,(mutationName,value) => {
+      let arr = store.mutations[mutationName] || (store.mutations[mutationName] = [])
+    })
+  }
+}
+
 class Store { // 用户获取的是这个Store类的实例
   constructor(options) {
     // 获取用户new 实例时传入的所有属性
@@ -55,31 +73,13 @@ class Store { // 用户获取的是这个Store类的实例
     this.getters = {}
     this.mutations = {}
     this.actions = {}
-    // 需要将用户传入的数据进行格式化操作
+    // 1.需要将用户传入的数据进行格式化操作
     this.modules = new ModuleCollection(options)
     console.log(this.modules);
-    /*
-    let root = {
-      _raw: rootModule,
-      state: rootModule.state,
-      _children: {
-        a: {
-          _raw: aModule,
-          _children: {},
-          state: aModule.state
-        },
-        b: {
-          _raw: bModule,
-          _children: {
-            c: {
+    // 2.递归的安装模块
+    console.log(this,this.state);
+    installModule(this,this.state, [], this.modules.root)
 
-            }
-          },
-          state: bModule.state
-        }
-      }
-    }
-    */
     // -------------------------
     // 实现getters
     // const getters = options.getters // 获取用户传入的getters
