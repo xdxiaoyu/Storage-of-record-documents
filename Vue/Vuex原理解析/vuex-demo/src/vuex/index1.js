@@ -4,17 +4,44 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-20 17:38:07
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-20 18:06:41
+ * @LastEditTime: 2020-07-20 19:56:40
  */
 let Vue
-// const forEach = (obj, callback) => {
-//   Object.keys(obj).forEach(key => {
-//     callback(key, obj[key])
-//   })
-// }
+const forEach = (obj, callback) => {
+  Object.keys(obj).forEach(key => {
+    callback(key, obj[key])
+  })
+}
 class ModuleCollection {
   constructor(options) {
-    console.log(options)
+    // 深度将所有的子模块都遍历一遍
+    // console.log(options)
+    this.register([], options)
+  }
+  register(path, rootModule) {
+    let rawModule = {
+      _raw: rootModule,
+      _children: {},
+      state: rootModule.state
+    }
+    if (!this.root) {
+      this.root = rawModule
+    } else {
+      // 不停的找到要定义的模块， 将这个模块定义到他的父亲上
+      let parentmodule = path.slice(0, -1).reduce((root, current) => {
+        return root._children[current]
+      }, this.root)
+      parentmodule._children[path[path.length - 1]] = rawModule
+    }
+    if (rootModule.modules) {
+      forEach(rootModule.modules, (moduleName, module) => {
+        // 将a模块进行注册 [a] ,a模块定义
+        // 将b模块进行注册 [b] ,b模块定义
+
+        // 将c模块进行注册 [b,c], c模块定义
+        this.register(path.concat(moduleName), module)
+      })
+    }
   }
 }
 class Store { // 用户获取的是这个Store类的实例
@@ -30,6 +57,7 @@ class Store { // 用户获取的是这个Store类的实例
     this.actions = {}
     // 需要将用户传入的数据进行格式化操作
     this.modules = new ModuleCollection(options)
+    console.log(this.modules);
     /*
     let root = {
       _raw: rootModule,

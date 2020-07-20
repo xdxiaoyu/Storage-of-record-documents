@@ -1,9 +1,18 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: dxiaoxing
+ * @Date: 2020-07-20 08:27:59
+ * @LastEditors: dxiaoxing
+ * @LastEditTime: 2020-07-20 18:16:40
+--> 
 <template>
   <div id="app">
     <div>
       学习的年龄{{$store.state.age}}
       <br>
       我的年龄 {{$store.getters.myAge}}
+
       <button @click="syncChange()">点我更改</button>
       <button @click="asyncChange()">异步更改</button>
     </div>
