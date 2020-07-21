@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-20 17:38:07
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-20 19:56:40
+ * @LastEditTime: 2020-07-21 11:00:12
  */
 let Vue
 const forEach = (obj, callback) => {
@@ -44,6 +44,16 @@ class ModuleCollection {
   }
 }
 function installModule(store,rootState,path,rawModule) {
+  // 没有安装我们的状态，需要把子模块状态定义到rootState上
+  if(path.length > 0) { // 当前path如果长度大于0 说明有子模块
+    let parentState = path.slice(0,-1).reduce((root,current) => {
+      return root[current]
+    },rootState)
+
+    Vue.set(parentState,path[path.length -1],rawModule.state)
+  }
+
+
   let getters = rawModule._raw.getters
   if(getters) {
     forEach(getters,(getterName, value) => {
@@ -54,12 +64,30 @@ function installModule(store,rootState,path,rawModule) {
       })
     })
   }
-  let mutations = rawModule._raw.mutations
+  
+  let mutations = rawModule._raw.mutations // 去用户的mutation
   if(mutations) {
     forEach(mutations,(mutationName,value) => {
       let arr = store.mutations[mutationName] || (store.mutations[mutationName] = [])
+      arr.push((payload) => {
+        value(rawModule.state,payload)
+      })
     })
   }
+
+  let actions = rawModule._raw.actions // 取用户的action
+  if(actions) {
+    forEach(actions,(actionName,value) => {
+      let arr = store.actions[actionName] || (store.actions[actionName] = [])
+      arr.push((payload) => {
+        value(store,payload)
+      })
+    })
+  }
+  forEach(rawModule._children,(moduleName,rawModule)=> {
+  //   console.log(path.concat(moduleName));
+    installModule(store,rootState,path.concat(moduleName),rawModule)
+  })
 }
 
 class Store { // 用户获取的是这个Store类的实例
@@ -75,10 +103,10 @@ class Store { // 用户获取的是这个Store类的实例
     this.actions = {}
     // 1.需要将用户传入的数据进行格式化操作
     this.modules = new ModuleCollection(options)
-    console.log(this.modules);
+    
     // 2.递归的安装模块
-    console.log(this,this.state);
     installModule(this,this.state, [], this.modules.root)
+    console.log(this);
 
     // -------------------------
     // 实现getters
@@ -111,12 +139,13 @@ class Store { // 用户获取的是这个Store类的实例
     // })
   }
 
-  commit = (mutationName, payload) => { // es7写法 这个里面的this 永远指向当前的store实例
-    this.mutations[mutationName](payload) // 发布
+  commit = (mutationName, payload) => {
+    // es7写法 这个里面的this 永远指向当前的store实例
+    this.mutations[mutationName].forEach(fn => fn((payload))) // 发布
   }
 
   dispatch = (actionName, payload) => { // 发布的时候会找到对应的action执行
-    this.actions[actionName](payload)
+    this.actions[actionName].forEach(fn =>fn(payload))
   }
 
   // es6 中类的访问器

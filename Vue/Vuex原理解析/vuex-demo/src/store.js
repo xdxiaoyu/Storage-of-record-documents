@@ -4,9 +4,10 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-20 08:27:59
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-20 18:17:23
+ * @LastEditTime: 2020-07-21 10:59:07
  */
 import Vue from 'vue'
+// import Vuex from 'vuex'
 import Vuex from './vuex/index1'
 
 Vue.use(Vuex) // 默认会执行当前插件的install方法
@@ -17,16 +18,31 @@ export default new Vuex.Store({
     a: {
       state: {
         age: 'a100'
-      }
+      },
+      mutations: {
+        syncChange() {
+          console.log('a');
+        }
+      },
     },
     b: {
       state: {
         age: 'b100'
       },
+      mutations: {
+        syncChange() {
+          console.log('b');
+        }
+      },
       modules: {
         c: {
           state: {
             age: 'c100'
+          },
+          mutations: {
+            syncChange() {
+              console.log('c');
+            }
           },
         }
       }
