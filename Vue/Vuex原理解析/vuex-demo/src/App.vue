@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-20 08:27:59
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-21 10:58:20
+ * @LastEditTime: 2020-07-22 10:29:47
 --> 
 <template>
   <div id="app">
@@ -26,7 +26,7 @@
 export default {
   name: 'app',
   mounted() {
-    console.log(this.$store.state);
+    // console.log(this.$store.state);
   },
   methods: {
     syncChange() {
