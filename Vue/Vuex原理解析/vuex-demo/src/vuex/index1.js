@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-07-20 17:38:07
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-07-22 10:31:12
+ * @LastEditTime: 2020-07-23 08:58:36
  */
 let Vue
 const forEach = (obj, callback) => {
@@ -106,7 +106,7 @@ class Store { // 用户获取的是这个Store类的实例
     
     // 2.递归的安装模块
     installModule(this,this.state, [], this.modules.root)
-    console.log(this);
+    // console.log(this);
 
     // -------------------------
     // 实现getters
@@ -159,9 +159,10 @@ const install = (_Vue) => { // Vue构造函数
   Vue = _Vue // Vue的构造函数
   // 放到Vue的原型上 不对 因为默认会给所有的实例增加
   // 只有从当前的根实例开始 所有根实例的子组件才有$store方法
-  console.log(77,this.$options);
+  
   Vue.mixin({ // 组件的创建过程是先父后子
     beforeCreate() {
+      console.log(77,this.$parent);
       // 把父组件的store属性 放到每个组件的实例上
       if (this.$options.store) { // 根实例
         this.$store = this.$options.store
