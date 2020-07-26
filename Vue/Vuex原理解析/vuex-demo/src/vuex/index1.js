@@ -65,7 +65,7 @@ function installModule(store,rootState,path,rawModule) {
     })
   }
   
-  let mutations = rawModule._raw.mutations // 去用户的mutation
+  let mutations = rawModule._raw.mutations // 取用户的mutation
   if(mutations) {
     forEach(mutations,(mutationName,value) => {
       let arr = store.mutations[mutationName] || (store.mutations[mutationName] = [])
@@ -140,6 +140,7 @@ class Store { // 用户获取的是这个Store类的实例
   }
 
   commit = (mutationName, payload) => {
+    console.log('store::',this);
     // es7写法 这个里面的this 永远指向当前的store实例
     this.mutations[mutationName].forEach(fn => fn((payload))) // 发布
   }

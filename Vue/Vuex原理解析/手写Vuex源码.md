@@ -24,7 +24,7 @@ store.js
 ```js
 import Vuex from 'Vuex'
 
-Vue.use(Vuex) // 默认会执行当前插件的install方法
+Vue.use(Vuex) 
 
 // 通过Vuex中的一个属性 Store 创建一个store的实例
 export default new Vuex.Store({
@@ -84,8 +84,8 @@ import Vuex from './vuex/index1' // 自己写的Vuex
 Vue.use(Vuex) // 默认会执行当前插件的install方法
 
 // 通过Vuex中的一个属性 Store 创建一个store的实例
-// 定义相关数据
 export default new Vuex.Store({
+  // 定义数据
   modules: {
     a: {
       state: {
@@ -157,6 +157,7 @@ const install = (_Vue) => {
     Vue.mixin({ // 全局注册一个混入，影响注册以后的每一个创建的Vue实例。
         beforeCreate（） {
         // 判断当前根实例上有没有store,有的话把根组件的的store属性 放到每个组件的实例上
+        // 这样每个组件上都能直接实现this.$store去访问store里面的东西
         	if(this.$option.store) { 
         		this.$store = this.$options.store
     		} else {
@@ -165,7 +166,127 @@ const install = (_Vue) => {
     	}
     })
 }
-// 这样每个组件上都能直接实现this.$store去访问store里面的东西
+
+
+class Store { // 用户获取的是这个store类的实例
+    constructor(options) {
+        // 创建Vue的实例 保证更新状态可以刷新视图
+        this.vm = new Vue({
+            data: {
+                state: optons.state
+            }
+        })
+    }
+    
+    // es6 的访问器
+    get state() {
+        return this.vm.state
+    }
+    
+    this.getters = {}
+	this.mutations = {}
+	this.actions = {}
+	// 1、需要将用户传入的数据进行格式化操作
+	this.moudules = new ModulesCollections(options)
+
+	// 2、递归的安装模块
+	installModule(this,this.state,[], this.modules.root)
+
+	// 调用
+	commit = (mutationName, payload) => {
+        // es7写法 这个里面的this 永远指向当前的store实例
+    	this.mutaions[mutationName].forEach(fn =>fn(payload))
+    }
+    
+    dispath = (actionName, payload) => {
+        this.actions[actionName].forEach(fn =>fn(payload))
+    }
+}
+
+// 定义一个forEach遍历当前对象属性然后执行一个回调函数,后面要用到
+const forEach = (obj, callback) => {
+    Object.keys(obj).forEach(key => {
+        callback(key, obj[key])
+    })
+}
+
+// 格式化用户数据
+class ModuleCollection {
+    constructor(options) {
+        // 深度将所有的子模块都遍历一遍
+        this.register([], ooptions)
+    }
+    register(path, rootModule) {
+        let rawModule = {
+            _raw: rootModule,
+            _children: {},
+            state: rootModule.state
+        }
+        if(!this.root) {
+            this.root = rawModule
+        } else {
+            // 找到要定义的模块，将这个模块定义他父亲的_children属性里
+            let parentModule = path.slice(0,-1).reduce((root, current) => {
+                return root._children[current]
+            }, this.root)
+            parentModule._childen[path[path.length - 1]] = rawModule
+        }
+        
+        // 如果有子模块
+        if(rootModule.modules) {
+            forEach(rootModule.modules,(moduleName, module) => {
+                this.register(path.concat(moduleName), module)
+            })
+        }
+    }
+}
+
+// 递归安装模块
+function installModule(store, rootState, path, rawModeule) {
+    // 如果有子模块,安装子模块的状态
+    if(path.length > 0) {
+        let parentState = path.slice(0,-1).reduce((root, current) => {
+            return root[current]
+        }, rootState)
+         Vue.set(parentState, path[path.length -1],rawModule.state)
+    }
+    
+    let getters = rawModule._raw.getters // 取用户的getter
+    if(getters) {
+        forEach(getters, (getterName, value) => {
+            Object.defineProperty(store.getters, getterName, {
+                get: () => {
+                    return value(rawModule.state)
+                }
+            })
+        })
+    }
+    
+    let mutations = rawModule.raw.mutations // 取用户的mutation
+    if(mutations) {
+        forEach(mutations, (mutationName, value) => {
+       let arr = store.mutations[mutationName] || (store.mutaons[mutationName] = [])
+        })
+        arr.push((plyload) => {
+            value(rawModule.state, payload)
+        })
+    }
+    
+    let actions = rawModule._raw.actions // 取用户的action
+    if(actions) {
+        forEach(actions, (actionName, value) => {
+            let arr = store.actions[actionName] || (store.actions[actionName] = [])
+            arr.push((payload) => {
+                value(store, payload)
+            })
+        })
+    }
+    
+    // 递归
+    forEach(rawModule._childen, (moduleName, rawModule) => {
+        installModule(store, rootState, path.concat(moduleName),rawModule)
+    })
+}
 ```
 
 
