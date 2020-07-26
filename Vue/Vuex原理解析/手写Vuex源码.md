@@ -291,7 +291,17 @@ function installModule(store, rootState, path, rawModeule) {
 
 
 
+## 3.实现步骤总结：
 
+1、作为插件引入，执行install方法调用Vue.mixin在Vue全局生命周期混入一个方法，将Vuex中定义的数据源挂载到this.$store,即当前组件的实例上。
 
+2、state 直接new Vue实例，将数据源传入。完成数据源响应式操作。
 
+3、getters 递归遍历用户传入的getters对象，拿到每个里面每一个函数，通过Object.definedProperty属性处理。当get函数读取compile，触发get调用相应函数（函数内部自动传入当前数据源state作为参数），完成数据响应。
+
+4、mutations 递归遍历用户传入的mutations 对象，将相同名称下的函数都挂载到当前实例的mutations数组中，完成订阅。commit的时候拿到对应的函数名称进行遍历mutations数组调用对应名称函数，完成发布。
+
+5、actiosns 操作和mutations一样。
+
+6、module 是将用户传入的数据进行格式化，格式化好以后执行上面的安装模块的方法。具体查看上方installModule方法的详细操作。
 
