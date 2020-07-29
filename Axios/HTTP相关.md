@@ -47,3 +47,23 @@ Set-Cookie: BD_CK_SAM=1;path=/
 ### ③响应体
 
 html 文本/json文本/js/css/图片...
+
+
+
+## 3.API分类
+
+### 1.REST API:   restful
+
+ (1)	发送请求进行CRUD哪个操作由请求方式决定
+
+ (2) 	同一个请求路径可以进行多个操作
+
+ (3)	请求方式会用到GET/POST/PUT/DELETE
+
+### 2.非REST API： restless
+
+ (1) 请求方式不决定请求的CRUD操作
+
+ (2) 一个请求路径只对应一个操作
+
+ (3) 一般只有GET/POST
