@@ -4,7 +4,9 @@
 
 文档地址:<https://github.com/axios/axios>
 
-## 请求配置
+## axios理解和使用
+
+### 1.请求配置
 
 ```javascript
 {
@@ -121,7 +123,7 @@
 }
 ```
 
-## 响应结构
+### 2.响应结构
 
 某个请求的响应包含以下信息
 
@@ -148,7 +150,7 @@
 
 
 
-## axios特点
+### 3.axios特点
 
 1.基于promise的异步ajax请求库。
 
@@ -164,7 +166,7 @@
 
 
 
-## axios.create(config)
+### 4.axios.create(config)
 
 1.根据指定配置创建一个新的axios，也就是每个新axios都有自己的配置
 
@@ -178,9 +180,63 @@
 
 
 
+### 5.axios的处理链流程
 
+```js
+// 添加请求拦截器（回调函数） -> 后添加先执行
+axios.interceptors.request.use(
+    config => {
+        return config
+    },
+    error => {
+        return Promise.reject(error)
+    }
+)
 
+// 添加响应拦截器
+axios.interceptors.response.use(
+    response => {
+        return response
+    },
+    error => {
+        return Promise.reject(error)
+    }
+)
+```
 
+### 6.取消请求
+
+```js
+let cancel  // 用于保存取消请求的函数
+// 准备发请求前，取消未完成的请求
+if( typeof cancel === 'function' ) {
+    cancel('取消请求')
+}
+axios({
+    url: 'http://localhost:8000/products1',
+    cancelToken: new axios.CancelToken((c) => { // c是用于取消当前请求的函数
+    // 保存取消函数，用于之后可能需要取消当前请求
+    cancel = c;
+  })
+}).then(
+    response => {
+        cancel = null
+        consoel.log('请求成功了')
+    },
+    error => {
+        cancel = null
+        console.log(error.message)
+    }
+)
+
+cancelReq() {
+    if(type cancel === 'function') {
+        cancel('强制取消请求')
+    } else {
+        console.log('没有可取消的请求')
+    }
+}
+```
 
 
 
