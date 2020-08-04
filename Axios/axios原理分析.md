@@ -300,33 +300,168 @@ cancelReq()
 
 ④、axios作为对象有Axios原型对象上的所有方法，有Axios对象上所有属性
 
+> 源码中axios.js文件
+
+```js
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  // 等同于 Axios.prototype.request.bind(context)
+  // bind返回一个新函数，这个新函数内部会调用这个request函数，
+  // 简单的理解：axios函数最终找request执行
+  // context是Axios的实例，一旦使用了request函数里面的this指向的就是Axios实例
+  var instance = bind(Axios.prototype.request, context); // axios
+
+  // 将Axios原型对象上的方法拷贝到 instance上：request()/get()/post()/put()/delete()
+  utils.extend(instance, Axios.prototype, context);
+
+  // Copy context to instance
+  //  将Axios实例对象上的属性拷贝到instance上：defaults和interceptors属性
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+```
 
 
 
+### 3.instance与axios的区别？
+
+**1.相同：**
+
+（1）都是一个能发任意请求的函数： request(config)
+
+（2）都有发特定请求的各种方法：get()/post()/put()/delete()
+
+（3）都有默认配置和拦截器属性：defaults/interceptors
+
+**2.不同：**
+
+（1）默认匹配的值很可能不一样
+
+（2）instance没有axios后面添加的一些方法：create()/CancelToken()/all()
+
+> 源码中axios.js文件
+
+```js
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  // 还是调用了createInstance方法，跟上面一样再走里面一遍
+  return createInstance(mergeConfig(axios.defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+// 不一样的地方是axios添加了这些，而axios.create并没有添加这些操作
+axios.Cancel = require('./cancel/Cancel');
+axios.CancelToken = require('./cancel/CancelToken');
+axios.isCancel = require('./cancel/isCancel');
+
+// Expose all/spread
+axios.all = function all(promises) {
+  return Promise.all(promises);
+};
+```
+
+### 4.axios运行的整体流程？
+
+**主要流程：**
+
+> request(config)  == > dispatchRequest(config)  ===> xhrAdapter(config)
+
+**request(config)：**
+
+将请求拦截器 / dispatchRequest() / 响应拦截器 通过promise链串起来，然后promise
+
+**dispatchRequest(config) :**
+
+转换请求数据 ===> 调用xhrAdapter()发请求 ===> 请求返回后转换响应数据.返回promise
+
+**xhrAdapter(config):**
+
+创建XHR对象，根据config进行相应设置，发送特定请求，并接收响应数据，返回promise。
 
 
 
+axiso流程图：
+
+<img src="D:\exces\文档存放区\Storage-of-record-documents\Axios\axiso.png" alt="axiso"  />
+
+> 源码Axios文件
+>
+> Promise通过它的链使用将请求拦截器，发请求的操作，响应拦截器，以及我们的最厚请求的成功失败串联起来
+
+```js
+/**
+ * 主要用于发请求的函数
+ * 我们使用的axios就是此函数bind()返回的函数
+ * 
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
+Axios.prototype.request = function request(config) {
+  /*eslint no-param-reassign:0*/
+  // Allow for axios('example/url'[, config]) a la fetch API
+  if (typeof config === 'string') {
+    config = arguments[1] || {};
+    config.url = arguments[0];
+  } else {
+    config = config || {};
+  }
+
+  config = mergeConfig(this.defaults, config);
+
+  // Set config.method
+  if (config.method) {
+    config.method = config.method.toLowerCase();
+  } else if (this.defaults.method) {
+    config.method = this.defaults.method.toLowerCase();
+  } else {
+    config.method = 'get';
+  }
+
+  ------
+  // Promise通过它的链使用将请求拦截器，发请求的操作，响应拦截器，以及我们的最厚请求的成功失败串联起来
+
+  // Hook up interceptors middleware
+  var chain = [dispatchRequest, undefined];
+  var promise = Promise.resolve(config);
+
+  // 找到所有的请求拦截器函数，后添加的请求拦截器保存在数组的前面
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  // 后添加的响应拦截器保存在数组后面
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    chain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  // 通过promise的then()串连起来所有的请求拦截器/请求方法/ 响应拦截器
+  while (chain.length) {
+    promise = promise.then(chain.shift(), chain.shift());
+  }
+
+  // 返回用来指定我们的onResolved和onRejected的promise
+  return promise;
+}; 
+
+```
 
 
 
+### 5.axios的请求/响应拦截器是什么？
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+> 函数
 
 
 
