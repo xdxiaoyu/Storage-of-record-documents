@@ -473,6 +473,7 @@ Axios.prototype.request = function request(config) {
   // Promise通过它的链使用将请求拦截器，发请求的操作，响应拦截器，以及我们的最厚请求的成功失败串联起来
 
   // Hook up interceptors middleware
+  // undefined作用：chain后面是两两一组进行调用，有了它作为发请求那一组的reject失败回调，保证了	 响应拦截器还是被两两一组返回调用，避免错位
   var chain = [dispatchRequest, undefined];
   var promise = Promise.resolve(config);
 

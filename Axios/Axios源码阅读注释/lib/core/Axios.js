@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-08-03 18:35:15
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-08-04 20:55:38
+ * @LastEditTime: 2020-08-05 18:46:51
  */
 'use strict';
 
@@ -59,6 +59,7 @@ Axios.prototype.request = function request(config) {
   // Promise通过它的链使用将请求拦截器，发请求的操作，响应拦截器，以及我们的最厚请求的成功失败串联起来
 
   // Hook up interceptors middleware
+  // undefined作用：chain后面是两两一组进行调用，有了它作为发请求那一组的reject失败回调，保证了响应拦截器还是被两两一组返回调用，避免错位
   var chain = [dispatchRequest, undefined];
   var promise = Promise.resolve(config);
 
