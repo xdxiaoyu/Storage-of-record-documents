@@ -1,8 +1,17 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: dxiaoxing
+ * @Date: 2020-08-04 21:31:24
+ * @LastEditors: dxiaoxing
+ * @LastEditTime: 2020-08-05 13:45:39
+ */
 'use strict';
 
 var enhanceError = require('./enhanceError');
 
 /**
+ * 创建error对象的函数
  * Create an Error with the specified message, config, error code, request and response.
  *
  * @param {string} message The error message.

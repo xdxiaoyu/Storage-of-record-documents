@@ -10,6 +10,7 @@ var isURLSameOrigin = require('./../helpers/isURLSameOrigin');
 var createError = require('../core/createError');
 
 module.exports = function xhrAdapter(config) {
+  // 返回一个Promise
   return new Promise(function dispatchXhrRequest(resolve, reject) {
     var requestData = config.data;
     var requestHeaders = config.headers;
@@ -25,6 +26,7 @@ module.exports = function xhrAdapter(config) {
       delete requestHeaders['Content-Type']; // Let the browser set it
     }
 
+    // 创建XHR对象 
     var request = new XMLHttpRequest();
 
     // HTTP basic authentication
@@ -35,12 +37,16 @@ module.exports = function xhrAdapter(config) {
     }
 
     var fullPath = buildFullPath(config.baseURL, config.url);
+
+    // 初始化请求
     request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
 
     // Set the request timeout in MS
+    // 指定超时的时间
     request.timeout = config.timeout;
 
     // Listen for ready state
+    // 绑定请求状态改变的监听
     request.onreadystatechange = function handleLoad() {
       if (!request || request.readyState !== 4) {
         return;
@@ -55,6 +61,7 @@ module.exports = function xhrAdapter(config) {
       }
 
       // Prepare the response
+      // 准备response对象
       var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
       var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
       var response = {
@@ -66,6 +73,7 @@ module.exports = function xhrAdapter(config) {
         request: request
       };
 
+      // 根据响应状态码来确定请求的promise的结果状态（成功/失败）
       settle(resolve, reject, response);
 
       // Clean up request
@@ -73,6 +81,7 @@ module.exports = function xhrAdapter(config) {
     };
 
     // Handle browser request cancellation (as opposed to a manual cancellation)
+    // 绑定请求中断监听
     request.onabort = function handleAbort() {
       if (!request) {
         return;
@@ -158,18 +167,23 @@ module.exports = function xhrAdapter(config) {
     }
 
     // Not all browsers support upload events
+    // 绑定上传进度的监听
     if (typeof config.onUploadProgress === 'function' && request.upload) {
       request.upload.addEventListener('progress', config.onUploadProgress);
     }
 
+    // 如果配置了cancelToken
     if (config.cancelToken) {
       // Handle cancellation
+      // 指定用于中断请求的回调函数
       config.cancelToken.promise.then(function onCanceled(cancel) {
         if (!request) {
           return;
         }
 
+        // 中断请求
         request.abort();
+        // 让请求的promise失败
         reject(cancel);
         // Clean up request
         request = null;
@@ -181,6 +195,7 @@ module.exports = function xhrAdapter(config) {
     }
 
     // Send the request
+    // 发送请求，指定请求体数据，可能是null
     request.send(requestData);
   });
 };

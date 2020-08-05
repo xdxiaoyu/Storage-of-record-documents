@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-08-03 18:35:15
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-08-05 08:47:51
+ * @LastEditTime: 2020-08-05 13:43:27
  */
 'use strict';
 
@@ -89,6 +89,7 @@ var defaults = {
   maxContentLength: -1,
   maxBodyLength: -1,
 
+  // 判读状态码的合法性： [200,299]
   validateStatus: function validateStatus(status) {
     return status >= 200 && status < 300;
   }

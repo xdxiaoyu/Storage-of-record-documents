@@ -399,7 +399,7 @@ axiso流程图：
 
 > 源码Axios.js文件
 >
-> Promise通过它的链使用将请求拦截器，发请求的操作，响应拦截器，以及我们的最厚请求的成功失败串联起来
+> Promise通过它的链使用将请求拦截器，发请求的操作，响应拦截器，以及我们的最后请求的成功失败串联起来
 
 ```js
 /**
@@ -582,9 +582,146 @@ module.exports = function dispatchRequest(config) {
   }],
 ```
 
+#### xhrAdapter(config)
 
+> 源码xhr.js文件
 
+```js
+// 创建XHR对象 
+    var request = new XMLHttpRequest();
 
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = unescape(encodeURIComponent(config.auth.password)) || '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    var fullPath = buildFullPath(config.baseURL, config.url);
+
+    // 初始化请求
+    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
+	// buildURL在help文件夹buildURL.js处理请求url
+
+    // Set the request timeout in MS
+    // 指定超时的时间
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    // 绑定请求状态改变的监听
+    request.onreadystatechange = function handleLoad() {
+      if (!request || request.readyState !== 4) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      // 准备response对象
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        status: request.status,
+        statusText: request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      // 根据响应状态码来确定请求的promise的结果状态（成功/失败）
+      settle(resolve, reject, response); // 下方settle.js文件
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle browser request cancellation (as opposed to a manual cancellation)
+    // 绑定请求中断监听
+    request.onabort = function handleAbort() {
+      if (!request) {
+        return;
+      }
+
+      reject(createError('Request aborted', config, 'ECONNABORTED', request));
+
+      // Clean up request
+      request = null;
+    };
+
+	// Not all browsers support upload events
+    // 绑定上传进度的监听
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    // 如果配置了cancelToken
+    if (config.cancelToken) {
+      // Handle cancellation
+      // 指定用于中断请求的回调函数
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        // 中断请求
+        request.abort();
+        // 让请求的promise失败
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (!requestData) {
+      requestData = null;
+    }
+
+    // Send the request
+    // 发送请求，指定请求体数据，可能是null
+    request.send(requestData);
+```
+
+> settle.js文件
+
+```js
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+     // 请求成功
+    resolve(response);
+  } else {
+     // 请求出错
+    reject(createError( // 源码createError.js内 创建error对象的函数
+      'Request failed with status code ' + response.status,
+      response.config,
+      null,
+      response.request,
+      response
+    ));
+  }
+};
+
+default.js文件
+
+// 判读状态码的合法性： [200,299]
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+```
 
 
 
