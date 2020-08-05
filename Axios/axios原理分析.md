@@ -395,7 +395,9 @@ axiso流程图：
 
 <img src="D:\exces\文档存放区\Storage-of-record-documents\Axios\axiso.png" alt="axiso"  />
 
-> 源码Axios文件
+#### request(config)
+
+> 源码Axios.js文件
 >
 > Promise通过它的链使用将请求拦截器，发请求的操作，响应拦截器，以及我们的最厚请求的成功失败串联起来
 
@@ -456,6 +458,133 @@ Axios.prototype.request = function request(config) {
 }; 
 
 ```
+
+
+
+#### dispatchRequest(config)
+
+> 源码dispatchRequest.js/default.js文件
+
+```js
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+module.exports = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+
+  // Ensure headers exist
+  config.headers = config.headers || {};
+
+  // 对config中的data进行必要的处理转换
+  // 设置相应的Content-Type请求头
+  // Transform request data
+  config.data = transformData(
+    config.data,
+    config.headers,
+    // 转换数据格式
+    config.transformRequest // --对应在defalut文件中
+  );
+
+  // Flatten headers
+  // 整合config中所有的header
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers
+  );
+
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
+    }
+  );
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    // 对response中还没有解析的data数据进行解析
+    // Json字符串解析为js对象/数组
+    response.data = transformData(
+      response.data,
+      response.headers,
+      // 转换数据格式
+      config.transformResponse // --对应在defalut文件中
+    );
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData(
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+
+    return Promise.reject(reason);
+  });
+};
+```
+
+```js
+// 得到当前环境对应的请求适配器
+  adapter: getDefaultAdapter(),
+
+  // 请求转换器
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Accept');
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    // 如果data是对象，指定请求体参数格式为json，并将参数数据对象转换为json
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  // 响应数据转换器：解析字符串类型的data数据
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+```
+
+
+
+
 
 
 

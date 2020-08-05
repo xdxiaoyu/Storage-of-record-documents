@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-08-03 18:35:15
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-08-04 21:22:25
+ * @LastEditTime: 2020-08-05 08:49:29
  */
 'use strict';
 
@@ -40,10 +40,12 @@ module.exports = function dispatchRequest(config) {
   config.data = transformData(
     config.data,
     config.headers,
+    // 转换数据格式
     config.transformRequest
   );
 
   // Flatten headers
+  // 整合config中所有的header
   config.headers = utils.merge(
     config.headers.common || {},
     config.headers[config.method] || {},
@@ -63,9 +65,12 @@ module.exports = function dispatchRequest(config) {
     throwIfCancellationRequested(config);
 
     // Transform response data
+    // 对response中还没有解析的data数据进行解析
+    // Json字符串解析为js对象/数组
     response.data = transformData(
       response.data,
       response.headers,
+      // 转换数据格式
       config.transformResponse
     );
 
