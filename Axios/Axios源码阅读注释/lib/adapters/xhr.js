@@ -178,6 +178,7 @@ module.exports = function xhrAdapter(config) {
       // 指定用于中断请求的回调函数
       config.cancelToken.promise.then(function onCanceled(cancel) {
         if (!request) {
+          // 如果请求还没有结束，可以走后面的中断请求
           return;
         }
 

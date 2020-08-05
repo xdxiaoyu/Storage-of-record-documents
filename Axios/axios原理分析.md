@@ -725,9 +725,135 @@ default.js文件
 
 
 
-### 5.axios的请求/响应拦截器是什么？
+### 5.axios的请求/响应数据转换器是什么？
 
 > 函数
+
+1.请求转换器：对请求头和请求体数据进行特定处理的函数
+
+```js
+// 如果data是对象，指定请求体参数格式为json，并将参数数据对象转换为json
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+```
+
+2.响应转换器： 将响应体json字符串解析为js对象或数组的函数
+
+```js
+if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+```
+
+
+
+### 6.response的整体结构
+
+```js
+ {
+        data,
+        status,
+        statusText,
+        headers,
+        config,
+        request
+};
+// 对应源码adapters文件夹的xhr.js
+```
+
+
+
+### 7.error整体结构
+
+```js
+{
+   config,
+   request,
+   response,
+   ...
+}
+// 对应源码core文件夹的enhanceError.js
+```
+
+
+
+### 8.如何取消未完成的请求？
+
+1.当配置了cancelToken对象时，保存cancel函数
+
+（1） 创建一个用于将来中断请求的cancelPromise
+
+（2） 并定义了一个用于取消请求的cancel函数
+
+（3）将cancel函数传递出来
+
+2.调用cancel()取消请求
+
+（1）执行cancel函数传入错误信息message
+
+（2）内部会让cancelPromise变为成功，且成功的值为一个Cancel对象
+
+（3）在cancelPromise的成功回调中中断请求，并让发请求的promise失败，失败的reason为Cancel对象
+
+> 源码CancelToken.js / xhr.js
+
+```js
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  // 为取消请求准备一个promise对象，并保存resolve函数到外部(外部有机会可以使用promise)
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  // 保存当前token对象
+  var token = this;
+  // 执行器函数是外部定义，内部调用
+  // 立即执行接收的执行器函数，并传入用于取消请求的cancel函数
+  // cancel函数是内部定义，外部调用    -》结合上面(axios理解使用第6点一起康康)
+  executor(function cancel(message) {
+    // 如果token中有reason了，说明请求已取消。 | 这个if后看，先看下面的token.reason
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    // 将token的reason指定为一个Canel对象
+    token.reason = new Cancel(message);
+    // 将取消请求的promise指定为成功，值为reason
+    resolvePromise(token.reason);
+  });
+}
+```
+
+```js
+	// 如果配置了cancelToken
+    if (config.cancelToken) {
+      // Handle cancellation
+      // 指定用于中断请求的回调函数
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          // 如果请求还没有结束，可以走后面的中断请求
+          // 如果请求结束了，直接return，无法走后面的中断请求一系列操作
+          return;
+        }
+
+        // 中断请求
+        request.abort();
+        // 让请求的promise失败
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+```
 
 
 
