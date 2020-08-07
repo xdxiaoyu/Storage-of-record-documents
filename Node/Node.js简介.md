@@ -1,6 +1,6 @@
-# Node.js简介
+## Node.js简介
 
-## 		1.Node.js是什么
+### 				1.Node.js是什么
 
 Node.js诞生于2009年，有Joyent的员工Ryan Dahl开发而成，目前官网最新版本已经更新到17.7.0版本，最新最稳定的是10.15.3。Node.js不是一门语言也不是框架，他只是具有GoogleV8引擎的JavaScript运行时环境，同时结合Libuv扩展了JavaScript功能，使之支持io、fs等只有语言才有的特性，使得JavaScript能够同时具体DOM操作（浏览器）和I/O、文件读写、操作数据库（服务端）等能力，是目前最简单的全栈语言。
 
@@ -10,7 +10,7 @@ Node.js诞生于2009年，有Joyent的员工Ryan Dahl开发而成，目前官网
 
 Node.js的包管理工具，npm已经成为世界开源包管理中最大的生态，功能强大，目前单月使用者接近1000万。
 
-## 		2.Node.js特性（记住三句话）
+### 				2.Node.js特性（记住三句话）
 
 - 事件驱动
 - 非阻塞IO模型（异步）
