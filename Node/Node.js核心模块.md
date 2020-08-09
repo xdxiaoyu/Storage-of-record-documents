@@ -126,11 +126,90 @@ fs.unlink('xy.txt',function() {
 
 
 
-### 	4.创建目录
+### 	4.读取目录
+
+**语法**
+
+```js
+fs.readdir(path, callback)
+```
+> callback有两个参数，error：为错误信息；files：为目录下的文件数组列表
+
+```js
+let fs = require('fs')
+let { fsWritefs, fsRead } = require('./lcfs')
+
+const txtPath = "all.txt"
+fs.readdir('../fs', function (err, files) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(files);
+    files.forEach(async (filename, i) => {
+      let content = await fsRead('../fs/' + filename)
+      await fsWritefs(txtPath, content)
+    })
+  }
+})
+```
+
+
+
+
+
+### 	5.创建目录
 
 **语法**
 
 ```js
 fs.mkdir(path[,option], callback)
+```
+
+
+
+### 6.删除目录
+
+**语法**
+
+```js
+fs.rmdir(path. callback)
+```
+
+> 回收站无法找回
+
+```js
+let fs = require('fs')
+
+fs.rmdir('abc',() => {
+  console.log('删除成功');
+})
+```
+
+
+
+### 7.输入输出
+
+> 该`readline`模块提供了一个接口，用于一次从一行的[Readable](https://nodejs.org/api/stream.html#stream_readable_streams) 流（例如[`process.stdin`](https://nodejs.org/api/process.html#process_process_stdin)）中读取数据。
+>
+> 一旦调用了此代码，Node.js应用程序将`readline.Interface`在接口关闭之前终止， 因为接口等待`input`流上接收到数据。
+
+```js
+let readline = require('readline');
+// 导入readline包
+
+// 实例化接口对象
+let r1 = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
+
+//设置r1,提问事件
+r1.question("今天学什么？", (answer) => {
+  console.log('答复：', answer);
+  r1.close()
+})
+r1.on('close', () => {
+  process.exit(0)
+})
 ```
 
