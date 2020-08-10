@@ -239,11 +239,81 @@ Node.js，Stream有四种流类型：
 
 
 
+### 写入流
+
+**语法**：
+
+```js
+fs.createWriteStream(文件路径，[可选的配置操作])
+```
+
+例子：
+
+```js
+let fs = require('fs')
+// 创建写入流
+let ws = fs.createWriteStream('hello.txt', { flags: 'w', encoding: 'utf-8' })
+console.log(ws);
+// 监听文件打开事件 
+ws.on('open', () => {
+  console.log("文件打开了");
+})
+// 监听准备事件
+ws.on('ready', () => {
+  console.log("文件写入已准备状态");
+})
+// 监听文件关闭事件
+ws.on('close', () => {
+  console.log('文件写入完成关闭');
+})
+// 文件流式写入
+ws.write("helloworld!", (err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log("内容流入完成");
+  }
+})
+// 文件写入完成 
+ws.end(() => {
+  console.log("文件写入关闭");
+})
+```
+
+​	
+
+### 从流中读取数据
+
+**语法：**
+
+```js
+fs.createReadStream(路径,[可选的配置项])
+```
+
+```js
+// 语法：fs.createReadStream(路径,[可选的配置项])
+let rs = fs.createReadStream('hello.txt', { flags: 'r', encoding: 'utf-8' })
+console.log(rs);
+
+rs.on('open',() => {
+  console.log('读取的文件打开');
+})
+
+rs.on('close',() => {
+  console.log('读取流结束');
+})
+
+// 每一次数据流入完成
+rs.on('data',(chunk) => {
+  console.log(chunk);
+})
+```
 
 
 
+### 管道流
 
-
+> 在`'pipe'`当事件被发射[`stream.pipe()`](https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options)方法被称为上的可读流，添加该可写至其目的地集合。
 
 
 
