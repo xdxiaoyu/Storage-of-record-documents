@@ -323,3 +323,13 @@ rs.on('data',(chunk) => {
 
 Node.js中`path`模块提供了一些路径操作的API，`os`模块提供了一些操作系统相关信息的API
 
+`path.extname('hello.md')`获取文件（可以是一个路径文件）的扩展名，演示如下:
+
+```js
+let path = require('path')
+console.log(path.extname('http://www.xinhuanet.com//2019-11/23/c_1125266028.html'))
+// .html
+```
+
+`path.resolve([...path])`把路径或路径片段的序列解析为一个绝对路径。
+
