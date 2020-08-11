@@ -317,3 +317,9 @@ rs.on('data',(chunk) => {
 
 
 
+
+
+## path模块+os模块
+
+Node.js中`path`模块提供了一些路径操作的API，`os`模块提供了一些操作系统相关信息的API
+
