@@ -323,6 +323,8 @@ rs.on('data',(chunk) => {
 
 Node.js中`path`模块提供了一些路径操作的API，`os`模块提供了一些操作系统相关信息的API
 
+#### 1.path
+
 `path.extname('hello.md')`获取文件（可以是一个路径文件）的扩展名，演示如下:
 
 ```js
@@ -331,5 +333,95 @@ console.log(path.extname('http://www.xinhuanet.com//2019-11/23/c_1125266028.html
 // .html
 ```
 
-`path.resolve([...path])`把路径或路径片段的序列解析为一个绝对路径。
+- `path.resolve([...path])`把路径或路径片段的序列解析为一个绝对路径。
+
+```js
+let arr = ['/sxt','qianduan', 'zhongji']
+let info1 = path.resolve(...arr)
+console.log(info1);
+// D:\sxt\qianduan\zhongji
+```
+
+- `path.join([...paths])`方法使用平台特定的分隔符把全部定的`path`片段连接到一起，并规范化的路径。
+
+```js
+let arr = ['/sxt','qianduan', 'zhongji']
+let info1 = path.resolve(...arr)
+console.log(info1);
+// D:\sxt\qianduan\zhongji
+```
+
+- `path.parse([...paths])`解析路径，可以将路径信息直接解析出来，解析出根路径，目录，扩展名，文件名称，文件名
+
+```js
+console.log(path.parse(__filename));
+//	{ root: 'D:\\',
+//  	dir: 'D:\\exces\\PracticeCode\\Node相关\\PATH',
+//		base: 'nodePath2.js',
+//		ext: '.js',
+//  	name: 'nodePath2' 
+//	}
+```
+
+  
+
+**几个路径的含义：**
+
+> `__dirname`：获取当前执行文件所在**目录**的完整目录名
+
+```js
+// 获得当前执行目录的完整路径
+console.log(__dirname);
+// D:\exces\PracticeCode\Node相关\PATH
+let info2 = path.join(__dirname,'sxt','qianduan', 'zhongji')
+console.log(info2);
+// D:\exces\PracticeCode\Node相关\PATH\sxt\qianduan\zhongji
+```
+
+> `__filename`：获得当前执行**文件**的带有完整绝对路径的文件名
+
+```js
+// 获取当前的执行文件
+console.log(__filename);
+// D:\exces\PracticeCode\Node相关\PATH\nodePath2.js
+```
+
+> `process.cwd()`：获得当前执行**node命令**时候的文件夹目录名
+
+```js
+console.log(process.cwd(__filename));
+//  D:\exces\PracticeCode\Node相关\PATH
+```
+
+
+
+#### 2.os
+
+- `os.cpus()`获取操作系统的CPU信息。
+
+```js
+let os = require('os')
+console.log(os);
+```
+
+- `os.totalmem()` 获取整个内存大小
+
+```js
+let os = require('os')
+console.log(os.totalmem());
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
