@@ -413,6 +413,45 @@ console.log(os.totalmem());
 
 
 
+## URL模块
+
+`url`核心模块在为我们解析url地址时提供了非常方便的API，常见包含有查询字符串的url地址解析。
+
+1. `url.parse()`：可以解析一个url地址，通过传入第二个参数（`true`）把包含有查询字符串的query转换成对象。
+
+```js
+let httpUrl = "https://sale.vmall.com/hwmate.html?cid=10602"
+let urlObj = url.parse(httpUrl)
+console.log(urlObj);
+/*
+Url {
+  protocol: 'https:', // 协议
+  slashes: true,
+  auth: null,
+  host: 'sale.vmall.com',
+  port: null,
+  hostname: 'sale.vmall.com',  // 主机名
+  hash: null, // 哈希值
+  search: '?cid=10602',
+  query: 'cid=10602',
+  pathname: '/hwmate.html',
+  path: '/hwmate.html?cid=10602',
+  href: 'https://sale.vmall.com/hwmate.html?cid=10602'
+}
+*/
+```
+
+2.`url.resolve()`解析相当于基URL的目标URL。第一个参数：基URL，第二个参数：目标URL。
+
+```js
+let targetUrl = "http://www.taobao.com/"
+httpUrl = "./sxt/qianduan/laochen.html"
+
+let newUrl = url.resolve(targetUrl,httpUrl)
+console.log(newUrl);
+// http://www.taobao.com/sxt/qianduan/laochen.html
+```
+
 
 
 
