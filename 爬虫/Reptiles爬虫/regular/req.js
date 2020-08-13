@@ -4,9 +4,9 @@
  * @Author: dxiaoxing
  * @Date: 2020-08-12 15:14:00
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-08-12 20:42:44
+ * @LastEditTime: 2020-08-13 10:54:50
  */
-let axios = require('axios')
+// let axios = require('axios')
 let request = require('request')
 let fs = require('fs')
 let { fsWritefs, fsDir} = require('./lcfs')
