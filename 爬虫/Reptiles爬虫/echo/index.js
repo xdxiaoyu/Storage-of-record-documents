@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-08-13 19:15:16
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-08-14 18:38:47
+ * @LastEditTime: 2020-08-16 13:47:23
  */
 const axios = require('axios')
 const fs = require('fs')
@@ -51,3 +51,8 @@ async function download(mp3Url, filename) {
 for(i=1;i<=5; i++) {
   getPage(i)
 }
+
+// 验证代码
+// axios.get('https://www.dytt8.net/index.htm').then(res => {
+//   console.log(res.data);
+// })
