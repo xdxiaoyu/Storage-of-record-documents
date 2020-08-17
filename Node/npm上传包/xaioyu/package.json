@@ -1,0 +1,15 @@
+{
+  "name": "xiaoyufs",
+  "version": "0.1.2",
+  "description": "将原生的fs模块进行promise封装，可以快速的使用async_await模式",
+  "main": "lcfs.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fs",
+    "promise封装"
+  ],
+  "author": "小羽",
+  "license": "ISC"
+}
