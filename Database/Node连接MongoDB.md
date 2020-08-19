@@ -132,6 +132,10 @@ MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology:true},(err,db
 
 #### 更新数据
 
+##### 更新一条数据
+
+> updateOne()
+
 ```js
 var MongoClient = require('mongodb').MongoClient
 var url = "mongodb://localhost:27017/";
@@ -149,9 +153,225 @@ MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology:true},(err,db
 })
 ```
 
+##### 更新多条数据
+
+```js
+var MongoClient = require('mongodb').MongoClient
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology:true},(err,db) => {
+     if(err) throw err
+    var dbo = db.db('xiaoyu')
+    var whereStr = {username: '小羽'} // 查询条件
+    var updateStr = {$set:{type: '胸怀天下' }}
+    dbo.collection('user').pudateMany(whereStr,updateStr, (err, res) => {
+        if (err) throw err;
+        console.log(res.result.nModified + " 条文档被更新");
+        db.close();
+    })
+})
+```
 
 
 
+### 删除数据
+
+#### 删除一条数据
+
+```js
+var MongoClient = require('mongodb').MongoClient
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology:true},(err,db) => {
+     if(err) throw err
+    var dbo = db.db('xiaoyu')
+    var whereStr = {username: '小羽'} // 查询条件
+    dbo.collection('user').deleteOne(whereStr, (err, res) => {
+        if (err) throw err;
+        console.log("文档删除成功");
+        db.close();
+    })
+})
+```
 
 
+
+#### 删除多条数据
+
+```js
+var MongoClient = require('mongodb').MongoClient
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology:true},(err,db) => {
+     if(err) throw err
+    var dbo = db.db('xiaoyu')
+    var whereStr = {username: '小羽'} // 查询条件
+    dbo.collection('user').deleteMany(whereStr, (err, res) => {
+        if (err) throw err;
+        console.log("文档删除成功");
+        db.close();
+    })
+})
+```
+
+
+
+### 排序
+
+排序使用sort()方法，该方法接受一个参数，规定是升序(1)还是降序(-1)
+
+例如：
+
+```js
+{ type: 1 } // 按 type 字段升序
+{ type: -1 } // 按 type 字段降序
+```
+
+```js
+var MongoClient = require('mongodb').MongoClient
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology:true},(err,db) => {
+     if(err) throw err
+    var dbo = db.db('xiaoyu')
+    var mysort = {type: 1}
+    dbo.collection('user').find().sort(mysort).toArray((err, res) => {
+        if (err) throw err;
+        console.log(res);
+        db.close();
+    })
+})
+```
+
+
+
+### 查询分页
+
+如果要设置指定的返回条数可以使用 **limit()** 方法，该方法只接受一个参数，指定了返回的条数。
+
+#### limit()
+
+```js
+var MongoClient = require('mongodb').MongoClient
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology:true},(err,db) => {
+     if(err) throw err
+    var dbo = db.db('xiaoyu')
+    var mysort = {type: 1}
+    dbo.collection('user').find().limit(2).toArray((err, res) => {
+        if (err) throw err;
+        console.log(res);
+        db.close();
+    })
+})
+```
+
+#### skip()
+
+```js
+var MongoClient = require('mongodb').MongoClient
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology:true},(err,db) => {
+     if(err) throw err
+    var dbo = db.db('xiaoyu')
+    var mysort = {type: 1}
+    dbo.collection('user').find().skip(2).limit(2).toArray((err, res) => {
+        // 跳过前面两条数据，读取两条数据
+        if (err) throw err;
+        console.log(res);
+        db.close();
+    })
+})
+```
+
+
+
+### 删除集合
+
+我们可以使用drop()方法来删除集合
+
+```js
+var MongoClient = require('mongodb').MongoClient
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology:true},(err,db) => {
+     if(err) throw err
+    var dbo = db.db('xiaoyu')
+    var mysort = {type: 1}
+    dbo.collection('user').find().skip(2).limit(2).toArray((err, res) => {
+        // 跳过前面两条数据，读取两条数据
+        if (err) throw err;
+        console.log(res);
+        db.close();
+    })
+})
+```
+
+
+
+### $lookup 实现左连接(多表查询)
+
+创建集合 orders
+
+```js
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
+
+let obj = { _id: 1, product_id: 154, status: 1 }
+MongoClient.connect(url, { useNewUrlParser: true,useUnifiedTopology: true }, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("xiaoyu");
+    dbo.collection("orders").insertOne(obj, function(err, res) {
+        if (err) throw err;
+        console.log("文档插入成功");
+        db.close();
+    });
+});
+```
+
+创建集合 product
+
+```js
+MongoClient.connect(url, { useNewUrlParser: true,useUnifiedTopology: true }, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("xiaoyu");
+    var myobj =  [
+      { _id: 154, name: '笔记本电脑' },
+      { _id: 155, name: '耳机' },
+      { _id: 156, name: '台式电脑' }
+    ];
+    dbo.collection("products").insertMany(myobj, function(err, res) {
+        if (err) throw err;
+        console.log("插入的文档数量为: " + res.insertedCount);
+        db.close();
+    });
+});
+```
+
+使用$lookup查询
+
+```js
+MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {
+  if (err) throw err;
+  var dbo = db.db("xiaoyu");
+  dbo.collection("orders").aggregate([
+    {
+      $lookup:
+      {
+        from: 'products',            // 右集合
+        localField: 'product_id',    // 左集合 join 字段
+        foreignField: '_id',         // 右集合 join 字段
+        as: 'orderdetails'           // 新生成字段（类型array）
+      }
+    }
+  ]).toArray((err, res) => {
+    if (err) throw err
+    console.log(JSON.stringify(res));
+    // [{"_id":1,"product_id":154,"status":1,"orderdetails":[{"_id":154,"name":"笔记本电脑"}]}]
+    db.close();
+  })
+});
+```
 
