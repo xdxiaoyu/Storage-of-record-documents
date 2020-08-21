@@ -4,7 +4,7 @@
  * @Author: dxiaoxing
  * @Date: 2020-08-16 16:08:43
  * @LastEditors: dxiaoxing
- * @LastEditTime: 2020-08-16 16:40:54
+ * @LastEditTime: 2020-08-21 10:30:29
  */
 let puppeteer = require('puppeteer')
 
@@ -36,6 +36,7 @@ async function test() {
 
   // 通过表单输入进行搜索
   let inputEle = await page.$('.searchl .formhue')
+  console.log('inputEle:',inputEle);
   // 让光标进入到输入框
   await inputEle.focus()
   // 往输入框输入内容
