@@ -18,7 +18,7 @@
 
 初始化项目 `npm init`
 
-### 一、全局安装
+### 一、全局安装(global)
 
 ```js
 npm install webpack webpack-cli -g
@@ -30,5 +30,71 @@ npm install webpack webpack-cli -g
 
 
 
-### 二、项目里安装
+### 二、局部安装(local)
+
+```js
+// 在当前文件目录下
+npm install webpack webpack-cli -D
+
+webpack -v
+// 此时  讲无法输出版本号
+
+npx webpack -v
+// npx 会从当前目录的node_modules文件夹里寻找webpack
+```
+
+
+
+## webpack配置文件
+
+webpack.config.js
+
+```js
+const path = require('path')
+
+// node核心模块path两个小知识点复习
+// __dirname：或取当前执行文件所在目录的完整目录名
+// path.resolve()：把路径或者路径片段的序列解析为一个绝对路径
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+}
+
+
+
+// webpack指定配置文件进行打包 例：此时配置文件为-- webpackconfig.js
+npx webpack --config webpackconfig.js
+
+// 安装webpack-cli的作用
+使得我们可以在命令行里运行webpack或者npx这样的指令
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
