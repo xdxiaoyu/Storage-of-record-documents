@@ -74,17 +74,45 @@ npx webpack --config webpackconfig.js
 
 
 
-webpack是什么
+**webpack小考核 0_0**
 
-模块是什么
+```js
+webpack是什么：webpack的核心概念是一个模块打包工具，他的主要作用是将各类文件打包在一起。打包后的文件作用于浏览器中。
 
-webpack的配置文件作用是什么
+模块是什么：在模块化编程中，开发者将程序分解成离散的功能块。
+
+webpack的配置文件作用是什么 ：webpack打包会走默认配置，写了配置文件可以让打包按自己写的相关配置进行打包处理。
+
+```
 
 
 
+## loader
 
+webpack不能识别非js结尾的后缀的模块，需要让webpack识别出来其他后缀模块
 
+其实loader就是一个打包的方案。
 
+ex:
+
+```js
+module.exports = {
+  mode: 'development',
+  entry: './src/index.js',
+  module: {
+    rules: [{
+      test: /\.jpg$/,
+      use: {
+        loader: 'file-loader'
+      }
+    }]
+  },
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+}
+```
 
 
 
