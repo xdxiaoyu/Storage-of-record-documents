@@ -116,15 +116,63 @@ module.exports = {
 
 
 
+### 静态资源打包:
+
+### `file-loader`
+
+[官方文档](https://www.webpackjs.com/loaders/file-loader/)
+
+```js
+const path = require('path')
+
+module.exports = {
+    mode: 'development',
+    entry: './src/index.js',
+    module: {
+        rules: [{
+            test: /\.(jpg|png|gif)$/,
+            use: {
+                loader: 'file-loader',
+                options: {
+                    // placeholder 占位符
+                    name: '[name]_[hash].[ext]',
+                    outputhPath: 'images/'
+                }
+            }
+        }]
+    }
+}
+```
 
 
 
 
 
+### `url-loader`
 
+官方文档
 
+```js
+const path = require('path')
 
-
+module.exports = {
+    mode: 'development',
+    entry: './src/index.js',
+    module: {
+        rules: [{
+            test: /\.(jpg|png|gif)$/,
+            use: {
+                loader: 'url-loader',
+                options: {
+                    name: '[name]_[hash].[ext]',
+                    outputhPath: 'images/',
+                    limit: 20480, // 小于限制字节大小时打包成base64格式，大于则输出到指定文件夹通过http请求获取
+                }
+            }
+        }]
+    }
+}
+```
 
 
 
