@@ -178,3 +178,55 @@ module.exports = {
 
 
 
+## Plugins
+
+> plugin 可以在webpack运行到某个时刻的时候，帮你做一些事情。（类似于Vue，react里面的生命周期函数）
+
+### `HtmlWebpackPlugin`
+
+> HtmlWebpackPlugin 会在打包结束后，自动生成一个html文件，并把打包生成的js文件自动引入到这个HTML文件中
+
+```js
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var path = require('path');
+
+var webpackConfig = {
+  entry: 'index.js',
+  output: {
+    path: path.resolve(__dirname, './dist'),
+    filename: 'index_bundle.js'
+  },
+  plugins: [new HtmlWebpackPlugin({
+      template: ''
+  })]
+};
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
