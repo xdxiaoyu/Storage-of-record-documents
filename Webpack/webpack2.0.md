@@ -200,31 +200,102 @@ var webpackConfig = {
       template: ''
   })]
 };
+
+module.exports = webpackConfig;
 ```
 
 
 
+### `CleanWebpackPlugin`
+
+>此插件将output.path在每次成功重建后删除webpack目录中的所有文件以及所有为使用的webpack资产。
+
+```js
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var path = require('path');
+
+var webpackConfig = {
+  entry: 'index.js',
+  output: {
+    path: path.resolve(__dirname, './dist'),
+    filename: 'index_bundle.js'
+  },
+  plugins: [
+     new CleanWebpackPlugin({
+         protectWebpackAssets: false, // 允许删除当前打包文件的资源（默认是true-不允许）
+  	 })
+  ]
+};
+
+module.exports = webpackConfig;
+```
 
 
 
+##  entry和output
+
+多文件打包配置
+
+```js
+const path = require('path')
+
+module.exports = {
+    mode: 'development',
+    emntry: {
+        main: './src/index.js',
+        sub: './src/index.js'
+    },
+    module: {
+        rules: [{
+            test: /\.(jpg|png|gif)$/,
+            use: {
+                loader: 'url-loader',
+                options: {
+                    name: [name]_[hash].[ext],
+            	    outputPath: 'images/',
+            		limit: 20480
+                }
+            }
+        }]
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'src/index.html'
+        }),
+        new CleanWebpackPlugin({
+            protectWebpackAssets: false,
+        })
+    ],
+    output: {
+        publicPath: 'http://cdn.com.cn',  // 按需加载外部资源
+        // 打包后的文件 <script src="http://cdn.com.cn/main.js">
+        filename: '[name].js',
+        path: path.reslove(__dirname,'dist')
+    }
+}
+
+// 打包后文件：
+// <script src="http://cdn.com.cn/main.js"></script>
+// <script src="http://cdn.com.cn/sub.js"></script></body>
+```
 
 
 
+## sourceMap
+
+> sourceMap 它是一个映射关系， 映射打包后文件出错的地方对应实际项目文件错误的位置
+
+```js
+module.export = {
+    mode: 'development',
+    devtool: 'cheap-module-eval-source-map',
+    ...
+}
+```
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+## WebpackDevServer
 
 
 
