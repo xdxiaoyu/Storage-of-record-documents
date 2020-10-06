@@ -297,7 +297,38 @@ module.export = {
 
 ## WebpackDevServer
 
+> 提高开发效率，不需要每次更改代码都重新输入命令启动服务
+
+```js
+module.export = {
+    entry: {
+        main: './src/index.js',
+    },
+    devServer: {
+        contebtBase: './dist', // 告诉服务器从哪里提供内容。只有你想要提供静态文件时才需要。
+        open: true, // 自动打开浏览器访问地址
+    }
+}
+```
 
 
 
+借助node和webpack中间件实现WebpackDevServer
+
+```js
+const express = require('express')
+const webpack = require('webpack')
+const webpackDevMiddleware = require('webpack-dev-middleware')
+const config = require('./webpack.config')
+const complier = webpack(config)
+
+const app = express()
+// webpackDevMiddleware 中间件，可以监听webpack打包代码发生的变化
+
+app.use(webpackDevMiddleware(complier))
+
+app.listen(3000, () => {
+    console.log('server is running')
+})
+```
 
