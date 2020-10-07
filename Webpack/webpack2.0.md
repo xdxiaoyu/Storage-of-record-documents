@@ -332,3 +332,51 @@ app.listen(3000, () => {
 })
 ```
 
+
+
+## HotModuleReplacementPlugin
+
+> 插件实现热更新
+
+```js
+const webpack = require('webpack')
+
+module.exports = {
+    devServer: {
+        contentBase: './dist',
+        open: true,
+        hot: true,
+        hotOnle: true
+    },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin()
+    ]
+}
+```
+
+在入口文件中配置文件更改后需要更新的操作
+
+```js
+if(module.hot) {
+	module.hot.accept('./number.js', () => {
+        document.getElemntById('number')
+        document.body.removeChild(document.getElmentById('number'))
+        number()
+    })   
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
