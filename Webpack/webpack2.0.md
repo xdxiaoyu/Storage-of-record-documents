@@ -368,13 +368,37 @@ if(module.hot) {
 
 
 
+## babel
+
+> babel将ES6语法转ES5
+
+```js
+module: {
+    rules: [{
+        // exclude 排出在外的模块
+    	{
+      		test: /\.js$/, exclude: /node_modules/, loader: "babel-loader",
+             options: {
+        	   "presets": [["@babel/preset-env", { useBuiltIns: 'usage'}]]
+ 			}
+        }
+    }]
+}
+```
 
 
 
+低版本的浏览器没有ES6的新语法，还需要补充
+
+```js
+npm install --save @babel/polyfill
 
 
+// 在打包主文件的头部引入
+import "@babel/polyfill";
+```
 
-
+[polyfill](https://www.babeljs.cn/docs/babel-polyfill)
 
 
 
