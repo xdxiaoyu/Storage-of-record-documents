@@ -400,7 +400,42 @@ import "@babel/polyfill";
 
 [polyfill](https://www.babeljs.cn/docs/babel-polyfill)
 
+```js
+{
+    test: /\.js$/, exclude: /node_modules/, loader: "babel-loader",options: {
+        // 业务代码使用
+        "preset": [["@babel/preset-env", {
+            targets: {
+                chrome: '67', // 打包会运行在67版本上的浏览器
+            }，
+            useBuiltIns: 'usage'
+        }]]
+    }
+}
+// 这是通过全局注入方式变量，会造成全局污染
+```
 
 
 
+编写UI组件库，可以通过另一种发生打包ES6文件避免造成全局污染
 
+> @babel/plugin-transform-runtime
+
+```js
+"plugins": [[
+   // 不会污染全局，已闭包的形式注入，适合编写UI组件库或者库的时候使用
+       "@babel/plugin-transform-runtime",
+        {
+          "absoluteRuntime": false,
+          "corejs": 2, // 不配置不会把es6语法打包进去
+          "helpers": true,
+          "regenerator": true,
+          "useESModules": false,
+          "version": "7.0.0-beta.0"
+        }
+ ]]
+```
+
+
+
+还可以通过`.babelrc`文件将`options`里面的配置项写入进去，避免`options`对象特别长冗余
