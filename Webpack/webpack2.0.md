@@ -439,3 +439,32 @@ import "@babel/polyfill";
 
 
 还可以通过`.babelrc`文件将`options`里面的配置项写入进去，避免`options`对象特别长冗余
+
+
+
+## Tree Shaking
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
