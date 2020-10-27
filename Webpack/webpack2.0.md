@@ -444,17 +444,48 @@ import "@babel/polyfill";
 
 ## Tree Shaking
 
+> 你可以将应用程序想象成一棵树。绿色表示实际用到的源码和 library，是树上活的树叶。灰色表示无用的代码，是秋天树上枯萎的树叶。为了除去死去的树叶，你必须摇动这棵树，使它们落下。
+>
+> 删除模块中“未引用代码”，只支持ES Module的引入，这是因为`import`这种ES的模块引入底层是一个静态引入的方式，而Commdjs底层是动态引入。而Tree Shaking只支持静态方式的引入
+
+```js
+module.exports = {
+    optimization: {
+     usedExports: true
+    },
+}
+
+// webpack.config.js文件
+```
 
 
 
+```js
+{
+    "sideEffects": false,
+}
+    
+// package.json文件
+```
 
 
 
+会遇见的问题：
 
+```js
+import '@babel/polyfill' 
+// 当腻引入babel/polyfill时，实际上并未导出任何内容，他是直接在window对象上绑定Promise等等..
+// 当Tree Shaking 进行打包的时候发现没有任何导出内容很可能就会直接忽略掉，但实际上是需要的。使用Tree Shaking就会忽略会导致报错
+// 解决方案： 在package.json文件中写入-
+"sideEffects": ["@babel/polyfill"]
+// 如果没有特殊处理直接写false
 
+import './style.css'
+// 当引入css文件时，同理
+// 解决方案：在package.json文件中写入
+"sideEffects": ["*.css"]
 
-
-
+```
 
 
 
