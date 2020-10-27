@@ -489,7 +489,13 @@ import './style.css'
 
 
 
+## Develoment和Production模式的区分打包
 
+> 差异：
+>
+> develoment环境中，sorcemap是非常全的，可以快速定位问题。不压缩
+>
+> production环境中，被压缩，sorcemap比较简单的映射关系
 
 
 
