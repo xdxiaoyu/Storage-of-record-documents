@@ -647,3 +647,10 @@ module.exports = {
 }
 ```
 
+
+
+
+
+##  Code Splitting(代码分割)
+
+> webpack和Code Splitting的关系
