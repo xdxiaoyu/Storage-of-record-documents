@@ -676,3 +676,46 @@ module.exports = {
 }
 ```
 
+
+
+### SplitChunks
+
+> SplitChunksPlugin参数配置
+
+```js
+module.exports = {
+    entry: {
+        main: './src/index.js',
+    },
+    module: {
+        rules: [{...}]
+    },
+    plugins: [
+         optimization: { 
+           splitChunks: { 
+                chunks: 'all', // 针对同步和异步代码都做分割。initial-同步代码 async-异步代码
+                minSize: 30000, // 引入库大于当前数值30000kb，才做代码分割
+                maxAsyncRequests: 30, // 按需加载时的最大并行请求数，超过将不进分割
+                maxInitialRequest; 30, // 入口点的最大并行数
+                automaticNameDelimiter: '~', // 生成文件名连接符
+                enforceSizeThreshold: 50000, // 强制执行拆分的大小阈值和其他限制
+                cacheGroups: { // 缓存组。同时引入两个第三方模块，使用cacheGroups可以让两个模块打包在一个js文件中
+                	vendors: {
+                	   test: /[\\/]node_modules[\\/]/,
+                	   priority: -10, // default和vendors都满足时，哪个priority值大就会被打包到哪个组里
+                	   filename: 'vendors.js' // 允许覆盖文件名
+                	},
+    			   default: {
+                       priority: -20,
+                       reuseExistingChunk: true, // 已打包过的 模块再次在其他模块中被使用时，将不会重复打包
+                       filename: 'common.js'
+                   }
+                }
+           }
+ 		} 
+    ]
+}
+```
+
+
+
