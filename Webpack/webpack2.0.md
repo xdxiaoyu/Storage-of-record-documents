@@ -766,3 +766,40 @@ document.addEventListener('click', () => {
 // 每一个打包出来的js文件都是chunk
 ```
 
+
+
+
+
+## 打包分析
+
+> 当我们使用webpack进行代码的打包之后，我们可以借助打包分析的一些工具。来对打包后的文件进行一定的分析，然后来看一下它打包是否合理
+>
+> 打包分析工具github地址: https://github.com/webpack/analyse										
+>
+> 配置代码为： `webpack --profile --json > stats.json`
+
+```js
+// 在package.json文件中加入
+// 未加入打包生成json文件分析代码
+"script": {
+    "dev-build": "webpack --config ./build/webpack.dev.js"
+}
+// 加入以后
+"script": {
+    "dev-build": "webpack --profile --json > stats.json --config ./build/webpack.dev.js"
+}
+// 打包会生成 stats.json文件，可在上述github网站提供的-analyse下面地址，进行打包工具分析
+```
+
+
+
+除了上述地址可以分析打包后的文件，webpack官网还提供了其他社区支持：https://webpack.js.org/guides/code-splitting/#bundle-analysis
+
+
+
+
+
+## Preloading
+
+## Prefetching
+
