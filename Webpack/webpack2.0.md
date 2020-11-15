@@ -695,6 +695,7 @@ module.exports = {
            splitChunks: { 
                 chunks: 'all', // 针对同步和异步代码都做分割。initial-同步代码 async-异步代码
                 minSize: 30000, // 引入库大于当前数值30000kb，才做代码分割
+                minChunks: 1, // 打包生成的chunk文件，有几个引用了这个模块，小于当前数值将不进行分割（当一个模块被用了至少多少次的时候才进行代码分割）
                 maxAsyncRequests: 30, // 按需加载时的最大并行请求数，超过将不进分割
                 maxInitialRequest; 30, // 入口点的最大并行数
                 automaticNameDelimiter: '~', // 生成文件名连接符
@@ -718,4 +719,50 @@ module.exports = {
 ```
 
 
+
+## Lazy Loading
+
+> Lazy Loading（懒加载）其实并不是webpack里面的模块，是ECMAScript里面的，本质关系不大。webpack只是能识别import这种语法进行代码分割
+
+```js
+// Lazy Loading
+function getComponent() {
+    return import(/*webpackChunkName:"lodash"*/'lodash').then(({ default: _}) => {
+        var element = document.createElemnet('div')
+        element.innerHTML = _.join(['DEll', 'Lee'], '-')
+        return element
+    })
+}
+document.addEventListener('click', () => {
+    getComponent().then(element => {
+        document.body.appendChild(element)
+    })
+})
+
+
+// 同async-await优化
+
+async function getComponent() {
+    const { default: _ } = await import(/*webpackChunkName:"lodash"*/'lodash')
+    const element = document.creteElement('div')
+    element.innerHTML = _.join(['Dell', 'Lee'], '-')
+    return element
+}
+document.addEventListener('click', () => {
+    getComponent().then(element => {
+        document.body.appendChild(element)
+    })
+})
+```
+
+
+
+##  
+
+## Chunk是什么
+
+```js
+// Chunk
+// 每一个打包出来的js文件都是chunk
+```
 
