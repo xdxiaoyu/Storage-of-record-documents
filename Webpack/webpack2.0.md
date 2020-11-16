@@ -474,7 +474,7 @@ module.exports = {
 
 ```js
 import '@babel/polyfill' 
-// 当腻引入babel/polyfill时，实际上并未导出任何内容，他是直接在window对象上绑定Promise等等..
+// 当你引入babel/polyfill时，实际上并未导出任何内容，他是直接在window对象上绑定Promise等等..
 // 当Tree Shaking 进行打包的时候发现没有任何导出内容很可能就会直接忽略掉，但实际上是需要的。使用Tree Shaking就会忽略会导致报错
 // 解决方案： 在package.json文件中写入-
 "sideEffects": ["@babel/polyfill"]
@@ -797,9 +797,13 @@ document.addEventListener('click', () => {
 
 
 
-
-
 ## Preloading
+
+
+
+
+
+
 
 ## Prefetching
 
