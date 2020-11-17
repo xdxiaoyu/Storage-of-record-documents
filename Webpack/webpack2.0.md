@@ -799,11 +799,28 @@ document.addEventListener('click', () => {
 
 ## Preloading
 
+```js
+document.addEventListener('click', () => {
+  import(/* webpackPreloading: true */ './click.js').then(({default: func}) => {
+    func()
+  })
+})
 
-
-
+// 会和主的业务文件一起去加载。所以用下面是webpack使用更优的一种方式
+```
 
 
 
 ## Prefetching
+
+```js
+document.addEventListener('click', () => {
+  import(/* webpackPrefetch: true */ './click.js').then(({default: func}) => {
+    func()
+  })
+})
+
+// 会等待核心代码加载完成之后，页面宽空闲的时候，再去加载‘webpackPrefetch’对应的js文件。
+// 浏览器可能会存在兼容性问题
+```
 
