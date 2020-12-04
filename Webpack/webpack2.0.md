@@ -774,7 +774,7 @@ document.addEventListener('click', () => {
 
 > 当我们使用webpack进行代码的打包之后，我们可以借助打包分析的一些工具。来对打包后的文件进行一定的分析，然后来看一下它打包是否合理
 >
-> 打包分析工具github地址: https://github.com/webpack/analyse										
+> 打包分析工具github地址: https://github.com/webpack-contrib/webpack-bundle-analyzer										
 >
 > 配置代码为： `webpack --profile --json > stats.json`
 
