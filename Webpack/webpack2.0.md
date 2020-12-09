@@ -824,3 +824,101 @@ document.addEventListener('click', () => {
 // 浏览器可能会存在兼容性问题
 ```
 
+
+
+
+
+## Shimming
+
+> `webpack` 编译器(compiler)能够识别遵循 ES2015 模块语法、CommonJS 或 AMD 规范编写的模块。然而，一些第三方的库(library)可能会引用一些全局依赖（例如 `jQuery` 中的 `$`）。这些库也可能创建一些需要被导出的全局变量。这些“不符合规范的模块”就是 *shimming* 发挥作用的地方。
+
+jquery.ui.js
+
+```js
+export function ui() {
+  $('body').css('background', _join(['green'], ''));
+}
+// 报错 Uncaught ReferenceError: $ is not defined
+// 因为一个模块和另一个模块变量是隔离的
+// 需要直接引入  import $ from 'jquery'
+// 如果使用第三方的库，不可能去修改源码，此时就需要使用webpack解决这个问题
+```
+
+index.js
+
+```js
+import $ from 'jquery';
+import { ui } from './jquery.ui'
+ui()
+
+const dom = $('<div>');
+dom.html('----'));
+$('body').append(dom)
+```
+
+
+
+webpack.config.js
+
+```js
+const path = require('path')
+const webpack = require('webpack')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+  entry: {
+    main: './src/index.js',
+  },
+  mode: 'development',
+  devtool: 'cheap-module-eval-source-map', // production环境下使用cheap-module-source-map
+  devServer: {
+    contentBase: './dist',
+    open: true, // 自动打开浏览器访问地址
+    hot: true,
+    hotOnly: true
+  },
+  module: {
+    rules: [{
+      test: /\.(jpg|png|gif)$/,
+      use: {
+        loader: 'url-loader',
+        options: {
+          name: '[name]_[hash].[ext]',
+          outputPath: 'images/',
+          limit: 10240
+        }
+      }
+    },
+    // exclude 排出在外的模块
+    {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: [
+        {
+          loader: "babel-loader",
+        },
+      ],
+    }
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'src/index.html'
+    }),
+    new CleanWebpackPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    // new BundleAnalyzerPlugin()  注释打包分析 
+    // 此处添加 ProvidePlugin 方法可解决上述 `jquery.ui.js` 文件的报错
+    new webpack.ProvidePlugin({
+      $: 'jquery', // 当发现你的一个模块里用了$这个字符串，就会在这个模块中导入jquery这个库
+      _join: ['lodash', 'join']
+    })
+  ],
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, '../dist')
+  }
+}
+```
+
