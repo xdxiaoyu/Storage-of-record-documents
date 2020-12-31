@@ -922,3 +922,53 @@ module.exports = {
 }
 ```
 
+
+
+## library
+
+> 第三方库如何配置被引用
+
+webpack.config.js
+
+```js
+const path = require('path')
+
+module.export = {
+    mode: 'production',
+    externals: 'lodash', // lodash在打包库的时候，不打包到库的代码里去，而是让业务代码加载。
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'library.js',
+        
+        // 不管你通过任何形式引入这个库，都能让你引入到
+        libraryTarget: 'umd',
+        // ex: import libary from 'library'
+        //     const library = require('library')
+        //     require(['library'], function() {})
+        
+        // 想用 <script src='library.js'></script>这种方式引入，全局使用library.math等等
+        library: 'library', // 可命名为其他字符串
+        // 打包生成的代码挂载到一个页面的全局变量'library',配置了一个'library'参数
+        
+        // libraryTarget: 'this' // 'window'
+        // 将'library'挂载到this对象或者window上，此时不支持'umd'的引入模块方式
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
