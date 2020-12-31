@@ -958,15 +958,96 @@ module.export = {
 
 
 
+## plugin-钩子函数
+
+Plugin-插件什么时候有效？我们打包的某些时刻里面你想做一些事情，这个时候是插件生效的时刻。
+
+copyright-webpack-plugin.js
+
+```js
+Class CopyrightWebpackPlugin {
+    // constructor(options) {
+       // console.log('插件被使用了',options);
+	//}
+}
+
+apply(compiler) {
+    // compiler - 存放打包所有相关的内容
+    // 钩子。 emit: 生成资源到 output 目录之前。
+    // tapAsync:  接收两个参数， 这个plugin的名字和回调函数
+    compiler.hooks.emit.tapAsync('CopyrightWebpackPlugin', (compilation, cb) => {
+        debugger
+        // compilation - 存放这次打包的相关内容
+        compilation.assets['copyright.txt'] = {
+            source: function() {
+                return 'copyright by dell lee'
+            },
+            size: function() {
+                return 21
+            }
+        }
+        cb()
+    })
+    
+    compiler.hooks.compile.tap('CopyrightWebpackPlugin', (compilation) => {
+        console.log('compiler')
+    })
+}
+
+module.exports = CopyrightWebpackPlugin
+```
 
 
 
+webpack.config.js
+
+```js
+const path = require('path')
+const CopyrightWebpackPlugin = require('./plugin/copyright-webpack-plugin')
+
+module.exports = {
+    mode: 'development',
+    entry: {
+        main: './src/index.js'
+    },
+    plugin: [
+        new CopyrightWebpackPlugin({
+            name: 'dell' // 传参调试使用（并不是官方配置参数）
+        })
+    ],
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].js'
+    }
+}
+```
 
 
 
+package.json
 
-
-
+```json
+{
+  "name": "plugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+      // 两个命令干的事情是一样的，第一种可以传入node的参数进去
+    "debug": "node --inspect --inspect-brk node_modules/webpack/bin/webpack.js",
+     // --inspect: 我要开启node的调试工具
+     // --inspect-brk: 我在运行webpack.js做调试的时候，在webpack执行的时候在第一行打上一个断点
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.11.0",
+    "webpack-cli": "^4.2.0"
+  }
+}
+```
 
 
 
