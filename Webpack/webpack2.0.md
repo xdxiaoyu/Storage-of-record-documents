@@ -1055,3 +1055,71 @@ package.json
 
 ### TypeScript的打包配置
 
+`index.ts`
+
+```tsx
+import * as _ from 'lodash'
+
+// 对于第三方库，在ts文件中引用。如果想要库在调用方法时给予调用的错误警告，需要安装这个库的类型文件
+// 例如上述： npm install @type/lodash --save-dev
+
+Class Greeter {
+    greeting: string;
+    constructor(message: string) {
+        this.greeting = message
+    }
+    greet() {
+        return _.join(['hello,', '', this.greeting], '')
+    }
+}
+
+let greeter = new Greeter('world')
+
+alert('greeter.greet()')
+```
+
+`webpack.config.js`
+
+```js
+cosnt path = require('path')
+
+module.exports = {
+	mode: 'production',
+	entry: './src/index.ts',
+	module: {
+        rules: [{
+            test: /\.ts?$/,
+            use: 'ts-loader', // 这个loader打包时需要一个tsconfig.json文件。里面配置了对ts打包的配置项。
+            exclude: /node_modules/
+        }]
+    },
+    output: {
+        filname: 'bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    }
+}
+```
+
+`tsconfig.json`
+
+```json
+{
+    "compilerOptiuons": {
+        "outDir": "./dist",
+        "module": "es6", // 我们使用的是esmodule引入模块的方式即(import)
+        "target": "es5", // 打包生成文件的语法类型
+        "allowJs": "true", // 允许在ts文件中引用js的模块
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
