@@ -14,11 +14,12 @@ js手把手带你学会webpack4
 
 
 
-## webpack安装步骤
+## 初识Webpack
+### webpack安装步骤
 
 初始化项目 `npm init`
 
-### 一、全局安装(global)
+#### 一、全局安装(global)
 
 ```js
 npm install webpack webpack-cli -g
@@ -30,7 +31,7 @@ npm install webpack webpack-cli -g
 
 
 
-### 二、局部安装(local)
+#### 二、局部安装(local)
 
 ```js
 // 在当前文件目录下
@@ -45,7 +46,7 @@ npx webpack -v
 
 
 
-## webpack配置文件
+### webpack配置文件
 
 webpack.config.js
 
@@ -53,7 +54,7 @@ webpack.config.js
 const path = require('path')
 
 // node核心模块path两个小知识点复习
-// __dirname：或取当前执行文件所在目录的完整目录名
+// __dirname：获取当前执行文件所在目录的完整目录名
 // path.resolve()：把路径或者路径片段的序列解析为一个绝对路径
 module.exports = {
   entry: './src/index.js',
@@ -87,7 +88,8 @@ webpack的配置文件作用是什么 ：webpack打包会走默认配置，写�
 
 
 
-## loader
+## Webpack核心概念
+### loader
 
 webpack不能识别非js结尾的后缀的模块，需要让webpack识别出来其他后缀模块
 
@@ -178,11 +180,11 @@ module.exports = {
 
 
 
-## Plugins
+### Plugins
 
 > plugin 可以在webpack运行到某个时刻的时候，帮你做一些事情。（类似于Vue，react里面的生命周期函数）
 
-### `HtmlWebpackPlugin`
+#### `HtmlWebpackPlugin`
 
 > HtmlWebpackPlugin 会在打包结束后，自动生成一个html文件，并把打包生成的js文件自动引入到这个HTML文件中
 
@@ -206,7 +208,7 @@ module.exports = webpackConfig;
 
 
 
-### `CleanWebpackPlugin`
+#### `CleanWebpackPlugin`
 
 >此插件将output.path在每次成功重建后删除webpack目录中的所有文件以及所有为使用的webpack资产。
 
@@ -232,7 +234,7 @@ module.exports = webpackConfig;
 
 
 
-##  entry和output
+###  entry和output
 
 多文件打包配置
 
@@ -281,7 +283,7 @@ module.exports = {
 
 
 
-## sourceMap
+### sourceMap
 
 > sourceMap 它是一个映射关系， 映射打包后文件出错的地方对应实际项目文件错误的位置
 
@@ -295,7 +297,7 @@ module.export = {
 
 
 
-## WebpackDevServer
+### WebpackDevServer
 
 > 提高开发效率，不需要每次更改代码都重新输入命令启动服务
 
@@ -334,7 +336,7 @@ app.listen(3000, () => {
 
 
 
-## HotModuleReplacementPlugin
+### HotModuleReplacementPlugin
 
 > 插件实现热更新
 
@@ -368,7 +370,7 @@ if(module.hot) {
 
 
 
-## babel
+### babel
 
 > babel将ES6语法转ES5
 
@@ -441,8 +443,8 @@ import "@babel/polyfill";
 还可以通过`.babelrc`文件将`options`里面的配置项写入进去，避免`options`对象特别长冗余
 
 
-
-## Tree Shaking
+## Webpack进阶
+### Tree Shaking
 
 > 你可以将应用程序想象成一棵树。绿色表示实际用到的源码和 library，是树上活的树叶。灰色表示无用的代码，是秋天树上枯萎的树叶。为了除去死去的树叶，你必须摇动这棵树，使它们落下。
 >
@@ -489,7 +491,7 @@ import './style.css'
 
 
 
-## Develoment和Production模式的区分打包
+### Develoment和Production模式的区分打包
 
 > 差异：
 >
@@ -499,7 +501,7 @@ import './style.css'
 
 
 
-### webpack-merge
+#### webpack-merge
 
 ```js
 公用的内容可以引入至 webpack.common.js中
@@ -651,7 +653,7 @@ module.exports = {
 
 
 
-##  Code Splitting(代码分割)
+###  Code Splitting(代码分割)
 
 > webpack和Code Splitting的关系
 >
@@ -678,7 +680,7 @@ module.exports = {
 
 
 
-### SplitChunks
+#### SplitChunks
 
 > SplitChunksPlugin参数配置
 
@@ -720,7 +722,7 @@ module.exports = {
 
 
 
-## Lazy Loading
+### Lazy Loading
 
 > Lazy Loading（懒加载）其实并不是webpack里面的模块，是ECMAScript里面的，本质关系不大。webpack只是能识别import这种语法进行代码分割
 
@@ -757,9 +759,8 @@ document.addEventListener('click', () => {
 
 
 
-##  
 
-## Chunk是什么
+### Chunk是什么
 
 ```js
 // Chunk
@@ -770,7 +771,7 @@ document.addEventListener('click', () => {
 
 
 
-## 打包分析
+### 打包分析
 
 > 当我们使用webpack进行代码的打包之后，我们可以借助打包分析的一些工具。来对打包后的文件进行一定的分析，然后来看一下它打包是否合理
 >
@@ -797,7 +798,7 @@ document.addEventListener('click', () => {
 
 
 
-## Preloading
+### Preloading
 
 ```js
 document.addEventListener('click', () => {
@@ -811,7 +812,7 @@ document.addEventListener('click', () => {
 
 
 
-## Prefetching
+### Prefetching
 
 ```js
 document.addEventListener('click', () => {
@@ -827,8 +828,7 @@ document.addEventListener('click', () => {
 
 
 
-
-## Shimming
+### Shimming
 
 > `webpack` 编译器(compiler)能够识别遵循 ES2015 模块语法、CommonJS 或 AMD 规范编写的模块。然而，一些第三方的库(library)可能会引用一些全局依赖（例如 `jQuery` 中的 `$`）。这些库也可能创建一些需要被导出的全局变量。这些“不符合规范的模块”就是 *shimming* 发挥作用的地方。
 
@@ -923,8 +923,8 @@ module.exports = {
 ```
 
 
-
-## library
+## Webpack实战配置案例讲解
+### library
 
 > 第三方库如何配置被引用
 
@@ -958,7 +958,7 @@ module.export = {
 
 
 
-## plugin-钩子函数
+### plugin-钩子函数
 
 Plugin-插件什么时候有效？我们打包的某些时刻里面你想做一些事情，这个时候是插件生效的时刻。
 
@@ -1053,5 +1053,5 @@ package.json
 
 
 
-## TypeScript的打包配置
+### TypeScript的打包配置
 
