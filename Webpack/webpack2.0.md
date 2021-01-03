@@ -1117,11 +1117,39 @@ module.exports = {
 
 ### 使用webpackDevServer实现请求转发
 
+index.js
+
+```js
+import "@babel/polyfill";
+
+import React, { Component } from 'react'
+import ReactDom from 'react-dom'
+import axios from 'axios'
+
+class App extends Component {
+    componentDidMount() {
+        axios.get('/react/api/header.json')
+            .then((res) => {
+            console.log('结果: ', res);
+        })
+    }
+    render() {
+        return <div>Hello World</div>
+    }
+}
+
+ReactDom.render(<App/>, document.getElementById)
+```
 
 
 
+webpack.config.js
 
-
+```js
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+```
 
 
 
