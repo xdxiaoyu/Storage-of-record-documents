@@ -1218,13 +1218,26 @@ module.exports = {
 
 ### Eslint 在webpack中的配置 
 
+> 安装 
+> ```bash
+> npm install eslint-webpack-plugin --save-dev
+> npm install eslint --save-dev
+> ```
 
 
 
+用法
 
+```js
+const ESLintPlugin = require('eslint-webpack-plugin');
 
-
-
+module.exports = {
+  // ...
+  plugins: [new ESLintPlugin(options)],
+  // ...
+};
+选
+```
 
 
 
