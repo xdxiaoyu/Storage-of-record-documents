@@ -1242,15 +1242,18 @@ module.exports = {
 
 ### 提升Webpack打包速度的方法
 
+ 
 
-
-
-
-
-
-
-
-
-
+```js
+1、跟上技术的迭代（Node，Npm，Yarn）
+2、在尽可能少的模块上应用Loader
+3、Plugin尽可能精简并确保可靠
+5、使用DllPlugin提高打包速度
+6、控制包文件大小
+7、多进程打包 -- thread-loader,parallel-webpack,happyack
+8、合理使用sourceMap
+9、结合stats分析打包结果
+10、开发环境内存编译（无用插件剔除）
+```
 
 
