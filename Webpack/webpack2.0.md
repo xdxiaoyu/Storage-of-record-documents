@@ -1266,13 +1266,68 @@ module.exports = {
 
 #### 1、如何编写一个Loader
 
+index.js
+
+```js
+consoel.log('heloo dell')
+```
 
 
 
+loaders/replaceLoader.js
+
+```js
+const loaderUtils = require('loader-utils')
+
+module.export = function(source) {
+    const option = loaderUtils.getOption(this)
+    console.log(options)
+    // return source.replace('dell', option.name)
+    const result = source.replace('dell', options.name)
+    this.callback(null, result)
+}
+
+// 可以同步或异步调用以返回多个结果的函数
+this.callback(
+    err: Error || null,
+    content: string | Buffer, // 源代码进来，解析过后新的代码
+    sourceMap?: SourceMap, // 打包sourceMap信息
+    meta?: any // 额外想往外传递的信息
+)
+```
 
 
 
+webpack.config.js
 
+```js
+const path = require('path')
+
+module.exports = {
+    mode: 'development',
+    entry: {
+        main: './src/index.js'
+    },
+    module: {
+        rules: [{
+            test: /\.js/,
+            // use: [path.resolve(__dirname, './loaders/replaceLoader.js')]
+            use: [
+                {
+                    loader: path.resolve(__dirname, './loaders/replaceLoader.js')
+                    options: {
+                    	name: 'xiaoYu'
+                	}
+                }
+            ]
+        }]
+    },
+    output: {
+        path: path.resolve(__dirname, dist),
+        filename: '[name].js'
+    }
+}
+```
 
 
 
