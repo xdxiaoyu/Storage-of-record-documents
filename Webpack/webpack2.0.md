@@ -1333,7 +1333,7 @@ module.exports = {
 
 #### 2、如何编写一个Plugin
 
-
+> 是webpack源码中80%都是基于Plugin机制编写的,可以说Plugin它的灵魂。
 
 
 
