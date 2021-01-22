@@ -1264,7 +1264,7 @@ module.exports = {
 
 ## 5、Webpack 底层原理及脚手架工具分析
 
-#### 1、如何编写一个Loader
+### 1、如何编写一个Loader
 
 index.js
 
@@ -1331,11 +1331,13 @@ module.exports = {
 
 
 
-#### 2、如何编写一个Plugin
+### 2、如何编写一个Plugin
 
 > 是webpack源码中80%都是基于Plugin机制编写的,可以说Plugin它的灵魂。（实例见4-plugin-钩子函数）
 
 
+
+### 3、Bundler源码编写（模块分析）
 
 
 
