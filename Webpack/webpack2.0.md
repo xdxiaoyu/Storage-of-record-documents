@@ -1339,13 +1339,34 @@ module.exports = {
 
 ### 3、Bundler源码编写（模块分析）
 
+`./src/word.js`
 
+```js
+export const word = 'hello'
+```
 
+`./src/message.js`
 
+```js
+import { word } from './word.js'
+const message = `say${word}`
+export default message
+```
 
+`./src/index.js`
 
+```js
+import message from './message.js'
+console.log(message)
+```
 
+`./bundle.js`
 
+```js
+const fs = require('fs')
+const path = require('path')
+const parser = require('@babel/parser')
+```
 
 
 
