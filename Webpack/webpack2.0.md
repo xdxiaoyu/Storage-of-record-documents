@@ -1366,6 +1366,72 @@ console.log(message)
 const fs = require('fs')
 const path = require('path')
 const parser = require('@babel/parser')
+const traverse = require('@bable/traverse').default
+const babel = require('@bable/core')
+
+const moduleAnalyser = (filename) => {
+    cosnt content = fs.readFileSync(filename, 'utf-8')
+    /* 打印出来的是抽象语法树（AST）
+    console.log(parser.parse(content, {
+    	sourceType: 'module'
+    }));
+    */
+    const ast = parser.parse(content, {
+        sourceType: 'module'
+    })
+    const dependencise = {};
+    traverse(ast, {
+        ImportDeclaration({ node }) {
+            const dirname = path.dirname(filname)
+            const newFile = path.join(dirname, node.source.value)
+            dependencies[node.source.value] = newFile
+        }
+    })
+    const { code } = bable.transformFromAst(ast, null , {
+        presets: ["@babel/preset-env"] // 插件的集合
+    })
+    
+    return {
+        filename,
+        dependencies,
+        code
+    }
+}
+// 写一个函数分析模块
+// 读取文件内容，把文件内容转换成js对象
+// 采用babel的parser把字符串转换成抽象语法树
+// 分析语法树的引用声明和依赖内容
+// 用键值对存储依赖关系的路径
+// 对模块的源码进行了一次编译(从es-module即es6的语法编译成浏览器能识别的语法)
+// 
+
+cosnt makeDependenciesGraph = (entry) => {
+    const entryModule = moduleAnalyser(entry)
+    const graphArray = [ entryModule ] // 依赖图谱
+    for (let i = 0; i< graphArray.length; i++) {
+        const item = graphArray[i];
+        const { dependencies } = item
+        if(dependencies) {
+           for(let j in dependencies) {
+               graphArray.push(moduleAnalyser(dependencies[j]))
+           }
+         }
+    }
+    
+    const graph = {}
+    graphArray.forEach(item => {
+        graph[item.filename] = {
+            dependencies: item.dependencies,
+            code: item.code
+        }
+    })
+    
+    return graph
+}
+
+const generateCode = (entry) => {
+    
+}
 ```
 
 
