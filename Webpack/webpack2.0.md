@@ -1430,8 +1430,26 @@ cosnt makeDependenciesGraph = (entry) => {
 }
 
 const generateCode = (entry) => {
-    
+    // console.log(makeDependenciesGraph(entyr)); 缺少一个require方法和export对象
+    const graph = JSON.stringfy(makeDependenciesGraph(entry))
+    return `
+	  (function(graph){
+		function require(module){
+		   function loaclRequire(relativePath) {
+			  return require(graph[module].dependencies[relativePath]) 
+		   }
+		   var exports = {}
+		   (function(require, exports, code){
+				eval(code)
+			})(localRequire, exports, graph[module].code);
+			return exports
+		};
+		require('${entry}')
+	  })(${graph})
+	`
 }
+
+const code = generateCOde('./src/index.js')
 ```
 
 
