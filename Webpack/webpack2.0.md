@@ -1468,3 +1468,23 @@ const code = generateCOde('./src/index.js')
 
 ## 6、Create-React-App 和 Vue-Cli 3.0脚手架工具配置分析
 
+>  VueCli对webpack的做了一些底层的封装，所以即使不会webpack也可以通过阅读VueCli官网快速的完成或更改配置，当然Vue也暴露了一个参数，可以编写原生的webpack配置
+
+```js
+module.exports = {
+    configureWebpack： {
+	}
+}
+
+```
+
+
+
+
+
+
+
+
+
+
+
