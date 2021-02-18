@@ -83,7 +83,7 @@ JavaScript是一门用来与网页交互的脚本语言。
 
 ## 二、HTML中的JavaScript
 
-### 1、使用`<script>`元素
+### 1、`<script>`元素
 
 <script>元素有下列8个属性：
 
@@ -95,19 +95,131 @@ JavaScript是一门用来与网页交互的脚本语言。
 - `src`：可选。表示包含要执行的代码的外部文件。
 - `type`：可选。代替`language`，表示代码块中脚本语言的内容类型
 
+`<script>`的使用方式有两种：
+
+1. 通过它直接在网页中嵌入JavaScript代码。
+
+   ```html
+   <script>
+       function sayHi() {
+           console.log("Hi !")
+       }
+   </script>
+   
+   包含在<script>内的代码会被从上到下解释。上述例子，被解释的是一个函数定义，并且该函数会被保存在解释器环境中。在 </script> 元素中的代码被计算完成之前，页面的其余内容不会被加载，也不会被显示。
+   ```
+
+   
+
+2. 通过它在网页中包含外部JavaScript文件。
+
+   > 要包含外部文件中的JavaScript，就必须使用`src`这个属性。这个属性的值是一个URL，指向包含JavaScript代码的文件。
+
+```html
+<script src="example.js"></script>
+
+上述例子在页面中加载了一个名为example.js的外部文件。文件本身只需要包含要放在<script>的起始及结束标签中的JavaScript代码。于解释行内JavaScript一样，在解释外部JavaScript文件时，页面也会阻塞。（阻塞时间也包含下载文件的时间。）在XHTML文档中，可以忽略结束标签，比如：
+
+<script src="example.js">
+```
 
 
 
+以上语法不能在HTML文件中使用，因为它是无效的HTML，有些浏览器不能正常，比如IE。
+
+> **注意**    按照惯例，外部JavaScript文件的扩展名是js。这不是必需的，因为浏览器不会检查所包含的JavaScript文件的扩展名。这就为使用服务器端脚本语言（如TypeScript，或React的JSX）转译为JavaScript提供了可能性。不过要注意，服务器经常会根据文件扩展来确定响应的正确MIME类型。如果不打算使用.js扩展名，一定要确保服务器能返回正确的MIME类型。
+>
+> MIME类型：是设定某种[扩展名](https://baike.baidu.com/item/扩展名/103577)的[文件](https://baike.baidu.com/item/文件/6270998)用一种[应用程序](https://baike.baidu.com/item/应用程序/5985445)来打开的方式类型，当该扩展名文件被访问的时候，[浏览器](https://baike.baidu.com/item/浏览器/213911)会自动使用指定应用程序来打开。多用于指定一些客户端自定义的文件名，以及一些媒体文件打开方式。
 
 
 
+#### 1.1 标签占位符
+
+​	过去，所有的`<script>`元素都被放在页面的`<head>`标签内。对于很多需要JavaScript的页面，这会导致页面渲染的明显延迟，此期间浏览器窗口完全空白。为解决这个问题，现代Web应用程序通常将所有JavaScript引用放在`<body>`元素中的页面内容后面。
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <script src="example.js"></script>  <!-- 之前的写法 -->
+    </head>
+    <body>
+        <!-- 这是页面内容 -->
+        
+        <script src="example.js"></script>  <!-- 现在的写法 -->
+    </body>
+</html>
+
+```
 
 
 
+#### 1.2 推迟执行脚本
+
+ 	HTML 4.01为`<script>`元素定义了一个叫`defer`属性。这个属性表示脚本在执行的时候不会改变页面的结构。因此这个脚本完全可以在整个页面解析完之后再运行。在`<script>`元素上设置`defer`属性，会告诉浏览器应该立即开始下载，但执行应该推迟：
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+     <title></title>
+    </head>
+    <body>
+        <!-- 这是页面内容 -->
+        <script defer src="example.js"></script>
+    </body>
+</html>
+
+注意  对于XHTML文档，指定defer属性时应该写成defer="defer"。
+```
 
 
 
+#### 1.3 异步执行脚本
+
+​	HTML5位`<script>`元素定义了`async`属性。从改变脚本处理方式上看，`async`属性与`defer`类似。当然，它们两者也都只适用于外部脚本，都会告诉浏览器立即开始下载。不过，与`defer`不同的是，标记`async`的脚本并不保证它们出现的次序执行
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+    <title></title>
+    </head>
+    <body>
+        <!-- 这是页面内容 -->
+        <script async src="example.js"></script>
+        <script async src="example2.js"></script>
+    </body>
+</html>
+
+<!--
+	在这个例子中，第二个脚本可能先于第一个脚本执行。因此，重点在于它们之间没有依赖关系。给脚本添加async属性的目的是告诉浏览器，不必等脚本下载和执行完后再加载页面，同样也不必等到该异步脚本下载和执行后再加载其他脚本。正因为如此，脚步脚步不应该在加载期间修改DOM。
+-->
+
+注意  对于XHTML文档，指定async属性时应该写成async="async"。
+```
 
 
 
+#### 1.4  动态加载脚本
+
+​	除了`<script>`标签，还有其他方式可有加载脚本。因为JavaScript可以使用DOM API， 所以通过向DOM中动态添加`<script>`元素同样可以加载指定脚本。只要创建一个`<script>`元素并将其添加到DOM即可。
+
+```js
+let script = document.createElement('script');
+script.src = 'gibberish.js';
+document.head.appendChild(script);
+
+// 当然，在把HTMLElement元素添加到DOM且执行到这段代码之前不会发送请求。默认情况下，以这种方式创建的<script>元素是以异步方式加载的，相当于添加了async属性。不过这种做可能会有问题，因为所有浏览器都支持createElement()方法，但不是所有浏览器都支持async属性。因此，如果要统一动态脚本的加载行为，可以明确将其设置为同步加载：
+
+let script = document.createElement('script');
+script.src = 'gibberish.js';
+script.async = false;
+document.head.appendChild(script);
+
+// 以这种方式获取的资源对浏览器预加载器是不可见的。这会严重影响它们在资源获取队列中的优先级。根据应用程序的工作方式以及怎么使用，这种方式可能会严重影响性能。要想让预加载器知道这些动态请求文件的存在，可以在文档头部显式声明它们：
+
+<link rel="preload" href="gibberish.js">
+```
 
