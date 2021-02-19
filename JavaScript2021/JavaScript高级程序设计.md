@@ -223,3 +223,61 @@ document.head.appendChild(script);
 <link rel="preload" href="gibberish.js">
 ```
 
+
+
+#### 1.5 XHTML中 的变化
+
+​	可扩展超文本标记语言是将HTML作为XML的应用重新包装的结果。与XHTML不同，在XHTML中使用JavaScript必须指定`type`属性且值为`text/javascript`。解析 `a < b`语句中的小于号（`<`）会被解析成一个标签的开始，并且由于作为标签开始的小于号后面不能有空格，这样会导致语法错误。避免XHTML中这种语法错误的方式有两种。
+
+> 第一种是把所有小于号（`<`）都替换成对应的HTML实体形式（`&lt;`）
+
+```html
+<script type="text/javascript">
+    function compare(a,b) {
+        if (a &lt; b) {
+            console.log("A")
+        } else if (a > b) {
+            console.log("B")
+        } else {
+            console.log("AB")
+        }
+    }
+</script>
+```
+
+
+
+> 第二种是把所有代码都包含到一个CDATA块中。在XHTML（及XML）中，CDATA快表示文档中可以包含任意文本的区块，其内容不作为标签来解析，因此可以在其中包含任意字符，包括小于号，且不会引发语法错误。使用CDATA格式如下：
+
+```html
+<script type="text/javascript"> <![CDATA[
+    function compare(a,b) {
+        if (a &lt; b) {
+            console.log("A")
+        } else if (a > b) {
+            console.log("B")
+        } else {
+            console.log("AB")
+        }
+    }
+]]></script>
+
+在兼容XHTML的浏览器中，这样能解决问题。但在不支持CDATA块的非XHTML兼容浏览器中则不行。为此，CDATA标记必须使用JavaScript注释来抵消。
+
+<script type="text/javascript">
+//<![CDATA[
+    function compare(a,b) {
+        if (a &lt; b) {
+            console.log("A")
+        } else if (a > b) {
+            console.log("B")
+        } else {
+            console.log("AB")
+        }
+    }
+//]]>
+</script>
+
+这种格式适用于所有现代浏览器。虽然有点黑科技的味道，但它可以通过XHTML验证，而且对XHTML之前的浏览器也能优雅地降级
+```
+
