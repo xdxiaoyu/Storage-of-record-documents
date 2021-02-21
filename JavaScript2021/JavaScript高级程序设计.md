@@ -309,7 +309,7 @@ document.head.appendChild(script);
 >
 > 任何一个条件被满足，包含在<noscript>中的内容就会被渲染。否则，浏览器不会渲染<noscript>中的内容。
 
-### 5 小结
+### 5 、小结
 
 - 要包含外部JavaScript文件，必须将`src`属性设置为要包含文件的URL。文件可以跟网页在同一台服务器上，也可以位于完全不同的域。
 
