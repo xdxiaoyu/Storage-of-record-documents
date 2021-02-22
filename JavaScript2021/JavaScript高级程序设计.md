@@ -312,13 +312,221 @@ document.head.appendChild(script);
 ### 5 、小结
 
 - 要包含外部JavaScript文件，必须将`src`属性设置为要包含文件的URL。文件可以跟网页在同一台服务器上，也可以位于完全不同的域。
-
 - 所有`<script>`元素会依照它们在网页中出现的次序被解释。在不使用`defer`和`async`属性的情况下，包含`<script>`元素中的代码必须严格按次序解释。
-
 - 对不推迟执行的脚本，浏览器必须解释完位于`<script>`元素中的代码，然后才能继续渲染页面的剩余部分。为此，通常应该把`<script>`元素放到页面末尾i，介于主内容之后及</body>标签之前。
-
 - 可以使用`async`属性表示脚本不需要等待其他脚本，同时也不阻塞文档渲染，即异步加载。异步脚本不能保证按照它们在页面中出现的次序执行。
-
 - 通过使用`<noscript>`元素，可以指定在浏览器不支持脚本时显示的内容。如果浏览器支持并启用脚本，则`<noscript>`元素中的任何内容都不会被渲染。
 
+
+
+## 三、语言基础
+
+### 1、语法
+
+	#### 	1.1 区分大小写
+
+​	 首先要知道的是，ECMAScript中一切都区分大小写。无论是变量、函数名还是操作符，都区分大小写。换句话说，变量`test`和变量`Test`是两个不同的变量。
+
+
+
+	#### 	1.2 标识符
+
+​	  **标识符**：就是变量、函数、属性或函数参数的名称。
+
+> 标识符可以由一或多个下列字符组成：
+
+- 第一个字符必须是一个字母、下划线（`_`）或美元符号（`$`）;
+
+- 剩下的其他字符可以是字母、下划线、美元符号或数字。
+
+  按照惯例，ECMAScript标识符使用驼峰大小写形式。例：`firstEscond`
+
+  **注意**    关键字、保留字、`true` 、`false`和`null`不能作为标识符
+
   
+
+  #### 1.3 注释
+
+  ECMAScript采用C语言风格的注释，包括单行注释和块注释。
+
+  ```js
+  // 单行注释
+  
+  /* 这是多行
+  注释*/
+  ```
+
+
+
+		#### 		1.4  严格模式
+
+​		  ECMAScript 5增加了严格模式的概念。严格模式是一种不同的JavaScript解析和执行模式，ECMAScript 3的一些不规范写法在这种模式下会被处理。对于不安全的活动将抛出错误。要对整个脚本启用严格模式，在脚本开头加上这一行：
+
+```js
+"user strict"
+```
+
+​		   虽然看起来像没有赋值给任何变量的字符串，但它其实是一个预处理指令。任何支持的JavaScript引擎看到它都会切换到严格模式。选择这种语法形式的目的是不破坏ECMAScript 3语法。
+
+​		   也可以单独指定一个函数在严格模式下执行，只要把这个预处理指令放到函数体开头即可：
+
+```js
+function doSomething() {
+    "use strict";
+    // 函数体
+}
+
+// 所有现代浏览器都支持严格模式。
+```
+
+
+
+		#### 		1.5  语句
+
+​		  ECMAScript中的语句以分号结尾。省略分号意味着由解析器确定语句在哪里结尾，如下所示：
+
+```js
+let sum = a + b			// 没有加分号也有效，但不推荐
+let diff = a - b;		// 加分号有效，推荐
+
+// 记着加分号有助于防止省略造成的问题，比如可以避免输入内容不完整
+```
+
+​		 if之类的控制语句只在执行多条语句时要求必须有代码块。不过最佳实践是始终在控制语句中使用代码块，即使要执行的只有一条语句，如下例所示：
+
+```js
+// 有效，但容易导致错误，应该避免
+if (test)
+    console.log(test);
+
+// 推荐
+if (test) { console.log(test);
+}
+
+// 在控制语句中使用代码块可以让你内容更清晰，在需要修改代码时也可以减少出错的可能性
+```
+
+
+
+### 2、关键字与保留字
+
+​		ECMA-262描述了一组保留的**关键字**，这些关键字有特殊用途。比如表示控制语句的开始和结束，或者执行特定的操作。按照规定，保留的关键字不能用座标识符或属性名。ECMA-262第6版规定的所有关键字如下：
+
+```js
+berak		do			in			typeof		case		else		instanceof		var	
+catch		export		 new		 void		 class		 extends	 return			 while
+const		finally		 super		 with		continue	 for		 switch		 	 yield
+debugger	function	 this		 default	if			 throw		 delete			import
+try
+```
+
+
+
+### 3、变量
+
+​		ECMAScript变量是松散型的，意思变量是可以用于保存任何类型的数据。每个变量只不过是一个用于保存任意值的命名占位符。有3个关键字可以声明变量： `var`、`const`和`let`。其中, `var`在ECMAScript的所有版本中都可以使用，而`const`和`let` 只能在ECMAScript 6及更晚的版本中使用。
+
+	#### 	3.1、var关键字
+
+​			①  `var` 声明作用域
+
+​			使用`var`操作符定义的变量会成为包含它的函数的局部变量。比如，使用`var`在一个函数内部定义一个变量，就意味着该变量将在函数退出时被销毁：
+
+```js
+function test() {
+    var message = "hi"; // 局部变量
+}
+test()
+console.log(message); // 出错
+```
+
+​		②  `var`声明提前
+
+​		使用`var`时，下面的代码不会报错。这是因为使用这个关键字声明的变量会自动提升到函数作用域顶部：
+
+```js
+function foo() {
+    console.log(age);
+    var age = 26;
+}
+foo(); // undefined
+
+// 之所以不会报错，是因为ECMAScript运行时把它看成等价如下代码：
+
+function foo() {
+    var age;
+    console.log(age);
+    age = 26
+}
+foo(); // undefined
+```
+
+
+
+#### 	3.2  let 声明
+
+​	`let`跟`var`的作用差不多，但有着非常重要的区别。最明显的区别是，`let`声明的范围是块作用域，而`var`声明的范围是函数作用域。
+
+```js
+if (true) {
+    var name = 'Matt';
+    console.log(name);	// Matt
+}
+console.log(name);		// Matt
+
+if (true) {
+    let age = 26;
+    console.log(age);	// 26
+}
+console.log(age);	// ReferenceError: age没有定义
+
+// 在这里，age 变量之所以不能在if块外部被引用，是因为它的作用域仅限于该块的内部。块作用域是函数作用域的子集。因此适用于var的作用域限制同样也适用于let。
+```
+
+​		当然，JavaScript引擎会记录用于变量声明的标识符及其所在块作用域，因此嵌套使用相同的标识符不会报错，而这是因为同一个块中没有重复声明：
+
+```js
+var name = 'Nicholas';
+console.log(name);	//	'Nicholas'
+if (true) {
+    var name = 'Matt';
+    console.log(name);	//	'Matt'
+}
+
+
+let age = 30;
+console.log(age);	//	30
+if (true) {
+    let age = 26;
+    console.log(age);	//	26
+}
+
+// 对声明冗余报错不会因混用let和var而受影响。这两个关键字声明的并不是不同类型的变量，它们只是指出变量在相关作用域如何存在。
+```
+
+​	①  暂死性死区
+
+​		`let`与`var`的另一个重要的区别，就是`let`声明的变量不会再作用域中被提升。在`let`声明之前的执行瞬间被称为“暂死性死区”，在此阶段引用任何后面才声明的变量都会抛出`ReferenceError`。
+
+​	②  全局声明
+
+​		 与`var`关键字不同，使用`let`在全局作用域中声明的变量不会成为`window`对象的属性（`var`声明的变量则会）。
+
+```js
+var name = 'Matt';
+console.log(window.name);	// 'Matt'
+
+let age = 26
+console.log(window.age);	//  undefined
+
+// 不过，let声明仍然是在全局作用域中发生的，相应变量会在页面的生命周期内存续。因此，为了避免SyntaxError,必须确保页面不会重复声明同一个变量。
+```
+
+​		③  条件声明
+
+
+
+
+
+
+
