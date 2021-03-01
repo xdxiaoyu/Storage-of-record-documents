@@ -617,23 +617,51 @@ person.name = 'Matt'; // ok
 
 ​			ECMAScript有6种简单数据类型（也称为原始类型）：`Undefined` 、`Null`、`Boolean`、`Number`、`String`和`Symbol`。`Symbol`（符号）是ECMAScript 6新增的。还有一种复杂数量类型叫 `Object`（对象）。`Object`是一种无序名值对的集合。因为在ECMAScript中不能定义自己的数据类型，所有值都可以用上述7种数据类型之一来表示。只有7种数据类型似乎不足以表示全部数据。但ECMAScript的数据很灵活，一种数据类型可以当作多种数据类型来使用。
 
+#### 	4.1  `typeof`操作符
+
+​		`typeof`在某些情况下返回的结果可能会让人费解，但技术上讲还是正确的。比如，调用`typeof null`返回的是`object`。这是因为特殊值`null`被认为是一个空对象的引用。
+
+> 严格来讲，函数在ECMAScript中被认为是对象，并不代表一种数据类型。可是，函数也有自己特殊的属性。为此，就有必要通过`typeof`操作符来区分函数和其他对象。
+
+#### 	
+
+#### 	4.2	`Undefined`类型
+
+​			`Undefined`类型只有一个值，就是特殊值`undefined`。当用`var`或`let`声明了变量但没有初始化时，就相当于给变量赋予了`undefined`值。
+
+> 包含undefined值的变量跟未定义变量是有区别的。
+
+```js
+let message;		// 这个变量被声明了，只是值为undefined
+
+// 确保没有声明过这个变量
+// let age
+
+console.log(message);	// "undefined"
+console.log(age);		// 报错
+```
+
+> 在对未初始化的变量调用`typeof`时，返回的结果是`undefined`，但未声明的变量调用它时，返回的结果还是`undefined`，但对未声明的变量调用它时，返回的结果还是`undefined`
+
+```js
+let message;	// 这个变量被声明了，只是值为undefined
+
+console.log(typeof message);	// "undefined"
+console.log(typeof age);		// "undefined"
+
+// 无论声明还是未声明，typeof返回的都是字符串"undefined"。逻辑上讲这是对的，因为虽然严格来讲这两个变量存在根本性差异，但它对任何一个变量都不可能执行什么真正的操作。
+```
 
 
 
+#### 		4.3	`Null`类型
 
+​				`Null`类型同样只有一个值，即特殊值`null`。逻辑上讲，`null`值表示一个空对象指针，这也是`typeof`传一个`null`会返回`object`的原因：
 
-
-
-
-
-
-
-
-
-
-
-
-
+```js
+let car = null;
+console.log(typeof car);	// "object"
+```
 
 
 
