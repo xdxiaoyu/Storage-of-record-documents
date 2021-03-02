@@ -683,3 +683,11 @@ console.log(typeof car);	// "object"
 
 
 
+
+
+
+
+
+
+
+
