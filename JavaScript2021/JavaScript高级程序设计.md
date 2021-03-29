@@ -691,9 +691,17 @@ console.log(typeof car);	// "object"
 
 
 
+#### 4.6 `String`类型
+
+​		`String`数据类型表示零或多个16位Unicode字符序列。
+
+​		`null`和`undefined`值没有`toString()`方法，而`String()`方法有
 
 
 
+#### 4.7 `Symbol`类型
+
+​		`Symbol`是ECMAScript6新增的数据类型。符号是原始值，且符号实例唯一、不可变的。符号的用途是确保对象属性使用唯一标识符，不会发生属性冲突的危险。
 
 
 
