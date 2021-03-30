@@ -705,5 +705,9 @@ console.log(typeof car);	// "object"
 
 
 
+#### 4.8 `Object`类型
+
+
+
 
 
