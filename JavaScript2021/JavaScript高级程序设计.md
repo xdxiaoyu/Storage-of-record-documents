@@ -707,7 +707,7 @@ console.log(typeof car);	// "object"
 
 #### 4.8 `Object`类型
 
-
+​		`ECMAScript`中的对象其实就是一组数据和功能的集合。对象通过`new`操作符后跟对象类型的名称来创建。通过创建`Object`类型的实例来创建自己的对象，给对象添加属性和方法。
 
 
 
