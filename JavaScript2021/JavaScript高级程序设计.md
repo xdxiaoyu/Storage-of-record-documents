@@ -711,3 +711,11 @@ console.log(typeof car);	// "object"
 
 
 
+
+
+### 5、操作符
+
+	#### 	5.1 一元操作符
+
+
+
