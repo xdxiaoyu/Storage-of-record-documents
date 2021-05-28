@@ -1175,7 +1175,6 @@ switch (i) {
 
 引用值是保存在内存中的对象。JavaScript不允许直接访问内存位置，所不能直接操作对象所在的内存空间。在操作对象时，实际上操作的是对该对象的**引用**而非实际的对象本身。为此，保存引用值的变量是**按引用**访问的。
 
-#### 	
 
 #### 	1.1、动态属性
 
@@ -1193,4 +1192,72 @@ switch (i) {
 
 #### 	1.3、传递参数
 
-ECMAScript中所有函数的参数都是按值传递的。意味着函数外的值会被复制到函数内部参数中，就像从一个变量复制到另一个变量。如果是原始值
+ECMAScript中所有函数的参数都是按值传递的。意味着函数外的值会被复制到函数内部参数中，就像从一个变量复制到另一个变量。如果是原始值，那么就跟原始值的复制一样，如果是引用值，那么就跟引用值变量的复制一样。
+
+> 按值传递参数时，值会复制到同一个局部变量（即一个命名参数，或者用ECMAScript的话说，就是`arguments`对象中的一个槽位）。在按引用传递参数时，值在内存中的位置会被保存在一个局部变量，这意味着对本地变量的修改会反映到函数外部。（这在ECMAScript中是不可能的。
+
+```js
+function addTen(num) {
+    num +=10;return num;
+}
+let count =20;
+let result = addTen(count);
+console.log(count);	// 20，没有变化
+console.log(result); // 30
+
+// 这个事实在使用数值这样的原始值时是非常明显的。
+```
+
+
+
+> 如果变量中传递的是对象，就没那么清楚了
+
+```js
+function setName(obj) {
+    obj.name = "Nicholas";
+}
+let preson = new Object();
+setName(person);
+console.log(person.name) // "Nicholas"
+```
+
+在函数内部，`obj`和`person`都指向同一个对象。结果就是，即使对象是按值传进函数的，`obj`也会通过引用访问对象。当函数内部给`obj`设置了`name`属性时，函数外部的对象也会反映这个变化，因为`obj`指向的对象保存在全局作用域的堆栈上。很多开发者错误的认为，当局部作用域中修改对象而变化反映到全局时，就意味着参数是按引用传递。
+
+> 为证明对象是按值传递的，我们再来看看下面这个修改后的例子：
+
+```js
+function setName(obj) {
+    obj.name = "Nicholas"; 
+    obj = new Object();
+    obj.name = "Greg"; 
+}
+let person = new Object(); 
+setName(person); 
+console.log(person.name); // "Nicholas"
+```
+
+如果`person`是按引用传递的，那么`person`应该自动将指针改为`name`为`Greg`的对象。可现在它的值仍是`"Nicholas"`,这表明函数中参数的值改变后，原始的引用仍然没变。当`obj`在函数内部被重写时，它变成了一个指向本地对象的指针。而那个本地对象在函数执行结束时就被销毁了。
+
+> **注意**	ECMAScript中函数的参数就是局部变量。
+
+
+
+#### 		1.4、确定类型
+
+`typeof`是判断一个变量是否为字符串、数值、布尔值或`undefined`的最好方式。如果值是对象或`null`，会返回`"object"`。（它对原始值很有用，但对引用值用处不大）
+
+ECMAScript提供了 instanceof 操作符，语法如下：
+
+```js
+result = variable instanceof constructor
+
+console.log(person instanceof Object) // 变量person是Object?
+console.log(arr instanceof Array) // 变量person是Array?
+```
+
+> 按照定义，所有引用值都是`Objec`的实例，因此通过`instanceof`操作符检测任何引用值和`Object`构造函数都会返回`true`。类似，检测原始值，始终返回`false`
+
+
+
+### 2、执行上下文与作用域
+
