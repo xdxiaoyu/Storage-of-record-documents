@@ -293,9 +293,13 @@ document.head.appendChild(script);
 - **缓存**。 浏览器会根据特定的设置缓存所有外部链接的JavaScript文件，这意味着如果两个页面都用到同一个文件，则该文件只需下载一次。这最终意味着页面加载更快。
 - **适应未来**。  通过把JavaScript放到外部文件中，就不必考虑用XHTML或前面提到的注释黑科技。包含外部JavaScript文件的语法在HTML和XHTML中是一样的
 
+
+
 ### 3、文档模式
 
 > 最初文档模式有两种：**混合模式**和**标准模式**，后又出现第三种文档模式：**准标准模式** 
+
+
 
 ### 4、 <noscrip>元素
 
@@ -308,6 +312,8 @@ document.head.appendChild(script);
 > --- 浏览器对脚本的支持被关闭。
 >
 > 任何一个条件被满足，包含在<noscript>中的内容就会被渲染。否则，浏览器不会渲染<noscript>中的内容。
+
+
 
 ### 5 、小结
 
@@ -1255,6 +1261,8 @@ console.log(person instanceof Object) // 变量person是Object?
 console.log(arr instanceof Array) // 变量person是Array?
 ```
 
+
+
 > 按照定义，所有引用值都是`Objec`的实例，因此通过`instanceof`操作符检测任何引用值和`Object`构造函数都会返回`true`。类似，检测原始值，始终返回`false`
 
 
@@ -1279,21 +1287,75 @@ console.log(arr instanceof Array) // 变量person是Array?
 
 #### 2.1、作用域链增强
 
+​	虽然执行上下文有三种，但有其他方式来增强作用域链。某些语句会导致在作用域链前端临时添加一个上下文，这个上下文在代码执行后会被删除。
+
+- `try`/`catch`语句的`catch`块
+- `with`语句
+
+
+
+#### 2.2、变量声明
+
+> ES5之前，`var`是声明变量的唯一关键字。
+>
+> ES6之后，增加了`let`和`const`两个关键字。（成为首选）
+
+
+
+①、使用`var`的函数作用域声明
+
+​		在使用`var`声明变量时，变量会自动添加到最接近的上下文。在函数中，最接近的上下文就是函数的局部上下文。如果变量未经声明就被初始化了，那么它就会自动被添加到全局上下文。
+
+EX1：
+
+```js
+function add(num1, num2) {
+    var sum = num1 + num2;
+    return sum
+}
+let result = add(10, 20);	// 30
+console.log(sum);		    // 报错：sum在这里不是有效变量
+// 外部访问不到函数内部使用 `var` 声明的局部变量
+```
+
+省略`var`即可访问，EX2：
+
+```js
+function add(num1, num2) {
+    sunm = num1 + num2;
+    return sum;
+}
+
+let result = add(10, 30);	// 30
+console.log(sum);		    // 30
+// 变量 `sum` 初始化时并未用 `var` 声明。 在调用 add() 后， `sum`被添加到全局上下文，在函数退出后依然存在，从后面可以访问到。
+```
+
+
+
+​		`var`声明会被拿到函数或全局作用域的顶部，位于作用域中所有代码之前。这个现象叫作“提升”。
 
 
 
 
 
+②、使用`let`的块级作用域声明
+
+​		块级作用域是由最近的一对包括花括号`{}`界定。换句话说，`if`块、`while`块、`function`块都是它的声明变量的作用域。
+
+```js
+for (var i = 0; i < 10; ++i) {}
+console.log(i);		// 20
+
+for (let j = 0; j < 10; ++j) {}
+console.log(i)		// ReferenceError: j没有定义
+
+// `let`非常适合在循环中声明迭代变量。使用var声明的迭代变量会泄露到循环外部。
+```
 
 
 
+③、使用`const`的常量声明
 
-
-
-
-
-
-
-
-
+​		使用`const`声明的变量必须同时初始化为某个值。一经声明，在其生命周期的任何时候都不能再重新赋值。但对象的键则不受限制。
 
