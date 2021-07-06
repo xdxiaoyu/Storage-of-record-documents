@@ -1457,5 +1457,39 @@ let a2 = new Article();
 // 假设添加如下代码：
 a2.author = 'Jake'
 
-// 此时两个`Article`实例就会对应两个不同的隐藏类。这样的操作
+// 此时两个`Article`实例就会对应两个不同的隐藏类。这样操作频率和隐藏类的大小，可能对性能产生明显影响
+// 解决方案就是避免JavaScript的”先创建在补充“式的动态属性赋值，且在构造函数中一次声明所有属性，如下
+
+function Article(opt_author) {
+    this.title = "xxding4";
+    this.author = opt_author;
+}
+
+let a1 = new Article();
+let a2 = new Article('jake');
+// 这样，两个实例基本上就一样了，共享一个隐藏类，从而带来潜在的性能提升。
+// But记住，用`delete`关键字后，它们不会再共享一个隐藏类。
+// 动态删除和添加属性导致的后果一致，最佳实践是把不想要的属性设置为`null`。
 ```
+
+
+
+③、内存泄漏
+
+​		JavaScript中的内存泄露大部分是由不合理的引用导致的。
+
+```js
+// 闭包导致的内存泄露
+
+let outer = function() {
+    let name = 'Jake';
+    return function() {
+        return name
+    }
+}
+```
+
+
+
+④、静态分配与对象池
+
