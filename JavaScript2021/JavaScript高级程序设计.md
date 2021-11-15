@@ -1503,3 +1503,56 @@ let outer = function() {
 
 ### 4、小结
 
+​		JavaScript可以保存两种类型的值：原始值和引用值(即对象)。原始数据类型可以是`Undefined`，`Null`，`Boolean`，`Number`，`String`和`Symbol`。
+
+​	原始值大小固定，保存在栈内存上。引用值是对象，储存在堆内存上。
+
+
+
+
+
+## 五、基本引用类型
+
+​	对象被认为是某个特定引用类型的实例。新对象通过使用 `new` 操作符后跟一个**构造函数**(constructor)来创建。构造函数就是用来创建新对象的函数，比如
+
+```javascript
+let now = new Date()
+```
+
+
+
+### 1、Date
+
+​		ECMAScript提供了`Date.now()` 方法，返回表示方法执行日期和时间的毫秒数。
+
+
+
+#### 	1.1继承的方法
+
+​		和其他类型一样，`Date`类型重写了`toLocaleString()`、`toString()`和`valueOf()`方法。
+
+```javascript
+new Date().toString() // 'Mon Nov 08 2021 20:13:31 GMT+0800 (中国标准时间)'
+new Date().toLocaleString() // '2021/11/8 下午8:13:48'
+
+// 操作符（如大于号和小于号）可以直接使用它返回的值
+let date1 = new Date(2021, 0, 1)
+let date2 = new Date(2021, 0, 1)
+date1 < date2 // true
+date1 > date2 // false
+```
+
+
+
+#### 1.2日期格式化方法
+
+> `Date`类型有几个专门用于格式化日期的方法，它们都会返回字符串：
+
+```javascript
+toDateString()	// 显示日期中的周几、月、日、年
+toTimeString()	// 显示日期中的时、分、秒和时区
+toLocaleDateString()	// 显示日期中的周几、月、日、年
+toLocaleTimeString()	// 显示日期中的时、分、秒
+toUTCString()	// 显示完整的UTC日期
+```
+

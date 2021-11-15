@@ -13,7 +13,7 @@ $ git checkout `分支名`   // 切换分支
 
 // 创建新分支，同步仓库
 $ git checkout -b `分支名`
-$ git git push origin `分支名`
+$ git push origin `分支名`
 
 
 $ git stash	save "save message"		// 暂存更改的时，添加备注方便查找。只`git stash`也可
@@ -24,6 +24,5 @@ $ git stash clear	// 删除所有缓存
 $
 $
 ```
-
 
 
