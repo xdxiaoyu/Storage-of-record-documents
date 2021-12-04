@@ -1556,3 +1556,46 @@ toLocaleTimeString()	// 显示日期中的时、分、秒
 toUTCString()	// 显示完整的UTC日期
 ```
 
+
+
+#### 1.3日期/时间组件方法
+
+```javascript
+getTime()								// 返回日期的毫秒表示
+setTime(milliseconds)					// 设置日期的毫秒数表示，从而修改整个日期
+
+getFullYear()							// 返回4位数年
+getUTCFullYear()						// 返回UTC日期的4位数年
+setFullYear(year)						// 设置日期的年（`year`必须是4位数）
+setUTCFullYear(year)					// 设置UTC日期的年（`year`必须是4位数）
+
+getMonth()								// 返回日期的月（0表示1月，11表示12月）
+getUTCMonth()							// 返回UTC日期的月（0表示1月，11月表示12月）
+setMonth(month)							// 设置日期的月（`monyh`为大于0小于11）
+
+// UTC同上，下面都不写了
+
+getDate()								// 返回日期中的日（1~31）
+setDate(date)							// 设置日期中的日（如果`date`大于该月天数，则加月）
+
+getDay()								// 返回日期中表示周几的数值（0表示周日，6表示周六）
+
+getHours()								// 返回日期中的时（0~23）
+setHours(hours)							// 设置日期中的时（如果`hours`大于23，则加日）
+
+getMinutes()							// 返回日期中的分（0~59）
+setMinutes(minutes)						// 设置日期中分（如果`minutes`大于59则加时）
+
+getSeconds()							// 返回日期中的秒（0~59）
+setSeconds(seconds)						// 设置日期重的秒（如果`seconds`大于59则加分）
+
+getMillseconds()						// 返回日期中的毫秒数
+setMillseconds(milliseconds)			// 设置日期中的毫秒数
+```
+
+
+
+
+
+### 2、RegExp
+
