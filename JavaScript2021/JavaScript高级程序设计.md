@@ -1598,4 +1598,3 @@ setMillseconds(milliseconds)			// 设置日期中的毫秒数
 
 
 ### 2、RegExp
-
