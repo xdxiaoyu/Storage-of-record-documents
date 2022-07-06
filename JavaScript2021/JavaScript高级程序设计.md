@@ -1605,4 +1605,3 @@ setMillseconds(milliseconds)			// 设置日期中的毫秒数
 - `y`：粘附模式，表示查找从`lastIndex`开始及之后的字符串。
 - `u`：Unicode模式，启用Unicode匹配。
 - `s`：`dotAll`模式，表示元字符`.`匹配任何字符（包括`\n`或者`\r`）
-
