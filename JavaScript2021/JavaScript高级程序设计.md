@@ -1600,8 +1600,94 @@ setMillseconds(milliseconds)			// 设置日期中的毫秒数
 ### 2、RegExp
 
 - `g`：全局模式，表示在查找字符串的全部内容，而不是找到第一个匹配内容就结束。
+
 - `i`：不区分大小写，表示在查找匹配时忽略字符串的大小写。
+
 - `m`：多行模式，表示查找到一行文本未尾时会继续查找。
+
 - `y`：粘附模式，表示查找从`lastIndex`开始及之后的字符串。
+
 - `u`：Unicode模式，启用Unicode匹配。
+
 - `s`：`dotAll`模式，表示元字符`.`匹配任何字符（包括`\n`或者`\r`）
+
+>正则表达式可以使用字面量形式定义，也可以使用`RegExp`构造函数来创建，它接收两个参数：模板字符串和（可选的）标记字符串。
+
+```javascript
+let pattern1 = /[bc]at/i;  
+// 匹配第一个"bat"或"cat"，忽略大小写
+
+let pattern2 = new RegExp("[bc]at" , "i"); 
+// 跟pattern1一样，只不过是用构造函数创建的
+
+// 注： 字符串所有元字符都必须二次转义，包括转义字符序列
+```
+
+#### 2.1  RegExp实例属性
+
+- `global `：布尔值，表示是否设置了 g 标记。
+- `ignoreCase `：布尔值，表示是否设置了 i 标记。
+- `unicode `：布尔值，表示是否设置了 u 标记。 
+- `sticky `：布尔值，表示是否设置了 y 标记。 
+- `lastIndex `：整数，表示在源字符串中下一次搜索的开始位置，始终从0开始。
+-  `multiline `：布尔值，表示是否设置了 m 标记。
+- `dotAll `：布尔值，表示是否设置了 s 标记。 
+- `source `：正则表达式的字面量字符串（不是传给构造函数的模式字符串），没有开头和结尾的斜杠。 
+- `flags `：正则表达式的标记字符串。始终以字面量而非传入构造函数的字符串模式形式返回（没有前后斜杠）。
+
+```javascript
+let pattern1 = /\[bc\]at/i; 
+console.log(pattern1.global); // false 
+console.log(pattern1.ignoreCase); // true
+console.log(pattern1.multiline); // false 
+console.log(pattern1.lastIndex); // 0 
+console.log(pattern1.source); // "\[bc\]at" 
+console.log(pattern1.flags); // "i"
+```
+
+
+
+#### 2.2 RegExp实例方法
+
+`RegExp`实例方法主要是`exec()`。如果找到匹配项，则返回包含第一个匹配信息的数组；如果没有找到匹配项，则返回`null`。匹配项虽然是数组但是包含两个额外的属性：`index`(字符串中匹配模式的起始位置)和`input`(是要查找的字符串)。
+
+
+```javascript
+let text = "cat, bat, sat, fat"; 
+let pattern = /.at/g; 
+let matches = pattern.exec(text); 
+console.log(matches) // ['cat', index: 0, input: 'cat, bat, sat, fat', groups: undefined]
+```
+
+
+
+如果模式设置了全局标记，则每次调用`exec()`方法会返回一个匹配的信息。如果没有设置全局标记，则无论对同一个字符串调用多少次`exec()`，也只会返回第一个匹配的信息。
+
+```javascript
+let text = "cat, bat, sat, fat"; 
+let pattern1 = /.at/; 
+let matches1 = pattern1.exec(text); 
+console.log(matches1.index); // 0 
+console.log(matches1[0]); // cat 
+console.log(pattern1.lastIndex); // 0
+
+matches1 = pattern1.exec(text); 
+console.log(matches1.index); // 0 
+console.log(matches1[0]); // cat 
+console.log(pattern1.lastIndex); // 0
+
+
+let pattern2 = /.at/g; 
+let matches2 = pattern2.exec(text); 
+console.log(matches2.index); // 0 
+console.log(matches2[0]); // cat 
+console.log(pattern2.lastIndex); // 3 
+
+matches1 = pattern2.exec(text); 
+console.log(matches2.index); // 5 
+console.log(matches2[0]); // bat 
+console.log(pattern2.lastIndex); // 8
+
+```
+
+
