@@ -1691,3 +1691,37 @@ console.log(pattern2.lastIndex); // 8
 ```
 
 
+
+#### 2.3  RegExp构造函数属性
+
+`RegExp `构造函数本身也有几个属性。
+
+|      全名      | 简写 |                       说明                       |
+| :------------: | :--: | :----------------------------------------------: |
+|    `input`     | `$_` |                 最后搜索的字符串                 |
+|  `lastMatch`   | `$&` |                  最后匹配的文本                  |
+|  `lastParen`   | `$+` |                 最后匹配的捕获组                 |
+| `leftContext`  |  $`  | `input`字符串中出现在<br />`lastMatch`前面的文本 |
+| `rightContent` | `$'` | `input`字符串中出现在<br />`lastMatch`后面的文本 |
+
+
+
+```javascript
+let text = "this has been a short summer"
+let pattern = /(.)hort/g
+
+if (pattern.test(text)) {
+    console.log(RegExp.input) // this has been a short summer
+    console.log(RegExp.leftContext) // this has been a
+    console.log(RegExp.rightContent) //  summer
+    console.log(RegExp.lastMatch) // short 
+    console.log(RegExp.lastParen) // s
+}
+```
+
+> **注意** `RegExp`构造函数的所有属性都没有任何Web标准出处，因此不要再生产环境使用他们。
+
+
+
+
+
