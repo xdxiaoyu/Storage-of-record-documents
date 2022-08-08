@@ -12,7 +12,62 @@
 
 > 即一个计算过程，解决问题的方法。
 
+
+
 ### 2、时间复杂度
+
+**时间复杂度**：用来评估算法运行效率的一个式子
+
+```c
+EX1:
+print('Hello World')		// O(1)
+    
+for i in range(n):
+  print('Hello World')		// O(n)
+
+for i in range(n):
+  for j in range(n):
+	print('Hello World')	// O(n^2)
+
+for i in range(n):
+  for j in range(n):
+	for k in range(n):
+	  print('Hello World')	// O(n^3)
+          
+EX2:         
+print('Hello World')          
+print('Hello Python')          
+print('Hello Algorithm')		// O(3)错,简单的操作只要不上升到n的单位，都是O(1)
+         
+for i in range(n):
+  print('Hello World')
+  for j in range(n):
+    print('Hello World')	// O(n^2+n)错,用大的单位,小的忽略不计.所以是 O(n^2)
+        
+EX3:
+while n > 1:
+  print(n)
+  n = n // 2
+
+// n=64的输出：64、32、16、8、4、2 
+// 2^6 = 64  log₂64=6  时间复杂度记为O(log₂n)或者O(logn)
+```
+
+**小结**
+
+- 时间复杂度是用来估计算法运行时间的一个式子（单位）。
+
+- 一般来说，时间复杂度高的算法比复杂度低的算法慢。
+
+- 常见的时间复杂度（按效率排序）
+
+  O(1)<O(logn)<O(nlogn)<O(n^2)<O(n^2logn)<O(n^3)
+
+- 复杂问题的时间复杂度
+
+  O(n!)O(2^n)O(n^n)...
+
+
 
 ### 3、空间复杂度
 
