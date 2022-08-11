@@ -18,7 +18,7 @@
 
 **时间复杂度**：用来评估算法运行效率的一个式子
 
-```c
+```python
 EX1:
 print('Hello World')		// O(1)
     
@@ -105,7 +105,29 @@ while n > 1:
 
 ### 4、复习：递归
 
+**递归的两个特点**
 
+- 调用自身
+- 结束条件	
 
+```python
+def func1(x):
+    print(x)
+    func1(x-1)			// 不是递归，没有结束条件
 
+def func2(x):
+    if(x>0):
+        print(x)
+        func2(x+1)		// 不是递归，结束条件不满足	
+
+def func3(x):
+    if(x>0):
+        print(x)
+        func2(x-1)		// 是递归。 先打印再执行函数,由上到下所以 3 2 1  
+        
+def func4(x):
+    if(x>0):
+        func2(x-1)
+        print(x)		// 是递归。 先执行函数再打印,由上到下所以 1 2 3   
+```
 
